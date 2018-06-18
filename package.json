@@ -2,8 +2,9 @@
   "name": "node-313",
   "version": "1.0.0",
   "description": "PCBuolder app with NodeJS",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
+    "start": "index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
