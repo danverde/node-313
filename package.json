@@ -1,0 +1,19 @@
+{
+  "name": "node-313",
+  "version": "1.0.0",
+  "description": "PCBuolder app with NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danverde/node-313.git"
+  },
+  "author": "Daniel Green",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danverde/node-313/issues"
+  },
+  "homepage": "https://github.com/danverde/node-313#readme"
+}
