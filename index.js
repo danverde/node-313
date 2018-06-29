@@ -1,7 +1,18 @@
-var nodeStatic = require('node-static');
-var file = new nodeStatic.Server();
-require('http').createServer(function(request, response) {
-    request.addListener('end', function() {
-        file.serve(request, response);
-    }).resume();
-}).listen(process.env.PORT || 3000);
+const express = require('express');
+const path = require('path');
+const PORT = process.env.PORT || 5000;
+
+var app = express();
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+ 
+app.set('view engine', 'ejs');
+
+
+
+
+
+app.listen(PORT, () => console.log(`Listening at http://localhost:${PORT}`));
