@@ -2,6 +2,10 @@ const express = require('express');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 
+const { Pool } = require('pg');
+const connectionString = process.env.DATABASE_URL; // TODO get this working! || 'postgres://ta_user:ta_pass@localhost:5432/familyhistory';
+const pool = new Pool({connectionString: connectionString});
+
 
 /* setup express */
 var app = express();
