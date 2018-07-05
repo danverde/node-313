@@ -8,7 +8,18 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/build.css" />
     <script>
-        //TODO fetch to DELETE item from build
+        function removeItemFromBuild(itemId) {
+            //TODO fetch to DELETE item from build
+            console.log('removing item with id', itemId);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            [...document.querySelectorAll('tbody .button')].forEach((button) => {
+                button.addEventListener('click', () => {
+                    removeItemFromBuild(button.id);
+                });
+            })
+        });
     </script>
 </head>
 <body>
