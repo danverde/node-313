@@ -2,14 +2,13 @@
     <div class='body-width'>
         <h1><a href='/'>PC Builder</a></h1>
         <nav>
-            <h1>Testing!</h1>
-            <h2><%= loggedIn %></h2>
-            <!-- TODO -->
-            <!-- if logged in... -->
-            <!-- Show logout & build buttons -->
-
-            <!-- if logged out... -->
-            <!-- show login & register buttons -->
+            <% if (loggedIn === true) { %>
+                <a class='button' href='/logout'>Logout</a>
+                <a class='button btn-primary' href='builds'>My Build</a>
+            <% } else {%>
+                <a class='button' href='/login'>Login</a>
+                <a class='button primary' href='/register'>Register</a>
+            <% }%>
         </nav>
     </div>
 </header>
