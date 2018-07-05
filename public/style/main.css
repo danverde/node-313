@@ -1,0 +1,216 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,900");
+html {
+    --primary-btn-color: #0082ec;
+    --secondary-btn-color:#131397;
+    --hover-btn-color: #2f2f8e;
+    --main-bg-color: #ededed;
+    --act-bg-color: #07074c;
+    background-color: var(--main-bg-color);
+}
+
+body {
+    box-sizing: border-box;
+    min-height: 100vh;
+    margin:0;
+    font-family: 'roboto', sans-serif;
+    position: relative;
+    overflow-x: hidden;
+}
+
+form {
+    width: 100%;
+}
+
+header {
+    width: 100vw;
+    background-color: var(--act-bg-color);
+    color: white;
+}
+
+footer {
+    color: white;
+    background-color: var(--act-bg-color);
+    box-sizing: border-box;
+    padding: 10px 0;
+    /* position: fixed; */
+    width: 100%;
+    bottom: 0;
+}
+
+header a,
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+header a:hover,
+footer a:hover {
+    text-decoration: underline;
+}
+
+main,
+.body-width {
+    width: 75vw;
+    min-width: 800px;
+    margin: auto;
+}
+
+.body-width {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+
+main div {
+    width: 100%;
+    /* border: 2px solid black; */
+    margin: 5px 0;
+    padding: 5px;
+}
+
+img {
+    max-width: 75vw;
+}
+
+header nav a {
+    margin-left: 10px;
+}
+
+.main-banner {
+    width: 100%;
+    height: 110px;
+    background-image: url('../images/towerNarrow.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/*** START TEMPLATES ***/
+.inline {
+    display: inline-block;
+}
+
+.message {
+    box-sizing: border-box;
+    padding: 0 15px;
+    background-color: #c6ffc6;
+    border: 1px solid green;
+}
+
+.message.error {
+    background-color: #ffc9c9;
+    border: 1px solid red;
+}
+
+.message.warning {
+    background-color:#ffedcc;
+    border: 1px solid orange;
+}
+
+.borderless {
+    border: none !important;
+}
+
+h2.section {
+    border-bottom: 1px solid var(--act-bg-color);
+    margin-bottom:0;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.flex-wrapper {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+.flex-wrapper div {
+    width: 100%;
+    /* border: 1px solid gray; */
+    /* display: inline-block; */
+}
+
+.flex-end {
+    justify-content: flex-end;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+.row-reverse {
+    flex-direction: row-reverse;
+}
+
+.space-around {
+    justify-content: space-around;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+p.button {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 10px;
+    margin:0
+}
+
+button.button,
+input.button {
+    background-color: var(--secondary-btn-color);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 15px;
+}
+
+a.button {
+    text-align: center;
+    color: white;
+    background-color: var(--secondary-btn-color);
+    border-radius: 5px;
+    padding: 10px;
+    text-decoration: none;
+    user-select: none;
+}
+
+.button:hover {
+    /* text-decoration: underline; */
+    background-color: var(--hover-btn-color);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.button.btn-disabled {
+    color: white;
+    background-color: gray;
+}
+
+.button.btn-disabled:hover {
+    text-decoration: none;
+    cursor: default;
+}
+
+.button.btn-primary {
+    background-color: var(--primary-btn-color);
+}
+
+.button.btn-primary:hover {
+    background-color: var(--hover-btn-color);
+    text-decoration: none;
+}
+
+.button.btn-warning {
+    background-color: #ff2020;
+}
+
+.button-lg {
+    font-size: 24pt;
+    padding: 50px;
+}

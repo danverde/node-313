@@ -1,0 +1,30 @@
+#itemList .item-container {
+    border: 1px solid black;
+    width: calc((100% / 2) - 40px) ;
+    max-height: 400px;
+    margin: 10px 0;
+    padding: 10px 15px;;
+}
+
+.item-container img {
+    float: right;
+    max-width: 50%;
+    max-height: 351px;
+}
+
+.item-container .button {
+    /* position: relative; */
+}   
+
+.item-container>div {
+    box-sizing: border-box;
+    clear: both;
+    display: flex;
+    /* flex-direction: row-reverse; */
+    margin-bottom: 0;
+    /* align-items: baseline; */
+}
+
+.price {
+    color: green;
+}

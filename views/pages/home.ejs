@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style/main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="style/home.css" />
+</head>
+<body>
+    <%- include('./header', {loggedIn: loggedIn}); %>
+    <main>
+        <div class='main-banner'></div>
+        <div id="about">
+            <h1>Landing Message</h1>
+            <p>This is a super cool &amp; important message all about this website, computers, tacos, and other nerdy stuff. Yay! (Just kidding about the 🌮's... Sorry...)</p>
+        </div>
+        <div id="parts" class="flex-wrapper">
+            <!-- TODO Create a link for each item type! -->
+        </div>
+    </main>
+    <%- include('footer') %>
+</body>
+</html>
