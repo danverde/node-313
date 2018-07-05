@@ -3,11 +3,41 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Builds</title>
+    <title>My Build</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="../../public/stylesheets/main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../style/build.css" />
 </head>
 <body>
-    <h1>You have reached the builds page</h1> 
+        <%- include('header') %> 
+    <main>
+    <div class='flex-wrapper space-between'>
+        <h1>My Build</h1>
+        <button class='button btn-warning' id="deleteBuild">Delete Build</button>
+    </div>
+        <!-- TODO display a message if needed -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Component Type</th>
+                    <th>Name</th>
+                    <th></th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- TODO display the build as a table -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <th>Total:</th>
+                    <td>$<!-- TODO display the total! --></td>
+                </tr>
+            </tfoot>
+        </table>
+    </main>
+    <%- include('footer') %> 
 </body>
 </html>

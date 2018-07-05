@@ -5,9 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="../../public/stylesheets/main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="style/main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="style/login.css" />
 </head>
 <body>
-    <h1>You have reached the login page</h1> 
+        <%- include('./header'); %>
+    <main>
+        <div class='main-banner'></div>
+        <div id="login">
+        <h1>Login</h1>
+        <!-- TODO Display a message if needed -->
+            <div class="form-wrapper">
+                <form method="POST" action="controller.php">
+                    <input type='hidden' name='action' value='login'>
+                    <div class="flex-wrapper space-between">
+                        <label for="email">Email:</label>
+                        <!-- TODO make email sticky? -->
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="flex-wrapper space-between">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password">
+                    </div>
+                    <input type="submit" class="button" value="Login">
+                </form>
+            </div>
+        </div>
+    </main>
+    <%- include('./footer'); %>
 </body>
 </html>
