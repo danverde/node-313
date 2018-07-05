@@ -2,9 +2,13 @@ const express = require('express');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 
-const { Pool } = require('pg');
+const {
+    Pool
+} = require('pg');
 const connectionString = process.env.DATABASE_URL; // TODO get this working! || 'postgres://ta_user:ta_pass@localhost:5432/familyhistory';
-const pool = new Pool({connectionString: connectionString});
+const pool = new Pool({
+    connectionString: connectionString
+});
 
 
 /* global server vars */
@@ -17,9 +21,11 @@ var app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({
+    extended: true
+}));
 app.set('view engine', 'ejs');
- 
+
 
 /* All GET requests */
 app.get('/', (req, res) => {
@@ -28,13 +34,26 @@ app.get('/', (req, res) => {
         return;
     }
 
-    res.render('pages/home', {loggedIn});
+    //TODO get data from DB
+
+    let viewData = {
+        loggedIn,
+        itemTypes: [{
+            itemTypeName: 'Motherboards',
+            itemTypeId: 1
+        }, {
+            itemTypeName: 'RAM',
+            itemTypeId: 2
+        }]
+    };
+
+    res.render('pages/home', viewData);
 });
 
 app.get('/logout', (req, res) => {
     if (loggedIn === true) {
         loggedIn = false;
-    } 
+    }
     res.redirect('login');
 });
 
@@ -43,7 +62,9 @@ app.get('/login', (req, res) => {
     if (loggedIn === true)
         res.redirect('/');
     else
-        res.render('pages/login', {loggedIn});
+        res.render('pages/login', {
+            loggedIn
+        });
 });
 
 app.get('/register', (req, res) => {
@@ -51,8 +72,10 @@ app.get('/register', (req, res) => {
         res.redirect('/');
         return;
     }
-    
-    res.render('pages/register', {loggedIn});
+
+    res.render('pages/register', {
+        loggedIn
+    });
 });
 
 app.get('/builds', (req, res) => {
@@ -71,7 +94,28 @@ app.get('/builds/:buildId', (req, res) => {
         return;
     }
 
-    res.render('pages/builds', {loggedIn});
+    //TODO get buildID from DB
+    let viewData = {
+        loggedIn,
+        items: [{
+            itemTypeId: 1,
+            itemTypeName: 'Motherboard'    ,
+            itemId: 7,
+            itemName: 'Cheapie MB',
+            itemPrice: 25
+        }, {
+            itemTypeId: 2,
+            itemTypeName: 'RAM'    ,
+            itemId: 18,
+            itemName: 'Cheapie RAM',
+            itemPrice: 3
+        }],
+        totalPrice: 28
+    };
+
+
+
+    res.render('pages/builds', viewData);
 });
 
 app.get('/items', (req, res) => {
@@ -89,7 +133,9 @@ app.get('/items/:typeId', (req, res) => {
         return;
     }
 
-    res.render('pages/items', {loggedIn});
+    res.render('pages/items', {
+        loggedIn
+    });
 });
 
 

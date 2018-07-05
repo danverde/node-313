@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/build.css" />
+    <script>
+        //TODO fetch to DELETE item from build
+    </script>
 </head>
 <body>
         <%- include('./header') %> 
@@ -26,14 +29,23 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- TODO display the build as a table -->
+                <% items.forEach((item) => { %>
+                    <tr>
+                        <td><%= item.itemTypeName %></td>
+                        <td><%= item.itemName %></td>
+                        <td>
+                            <button class="button btn-warning" id="<%= item.itemId %>">Remove</button>
+                        </td>
+                        <td><%= item.itemPrice %> </td>
+                    </tr>
+                <% }) %>
             </tbody>
             <tfoot>
                 <tr>
                     <td></td>
                     <td></td>
                     <th>Total:</th>
-                    <td>$<!-- TODO display the total! --></td>
+                    <td>$<%= totalPrice %></td>
                 </tr>
             </tfoot>
         </table>
