@@ -11,11 +11,28 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/browse.css" />
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        [...document.querySelectorAll('')].forEach(ele => {
-            
-        });
-    })
+        function addItemToBuild(itemId) {
+            console.log('add item called with id:', itemId);
+        }
+        
+        function removeItemFromBuild(itemId) {
+            console.log('remove item called with id:', itemId);
+        }
+
+        /* add appropriate event listeners to add/ remove item from build */
+        document.addEventListener('DOMContentLoaded', () => {
+            [...document.querySelectorAll('.item-container .button')].forEach(ele => {
+                if ([...ele.classList].includes('btn-warning')) {
+                    ele.addEventListener('click', () => {
+                        removeItemFromBuild(ele.id);
+                    })
+                } else {
+                    ele.addEventListener('click', () => {
+                        addItemToBuild(ele.id);
+                    })
+                }
+            });
+        })
     </script>
 </head>
 
@@ -42,9 +59,9 @@
                         </p>
                         <div>
                             <% if (item.isActive === true) {%>
-                                <button class="button btn-warning">Remove from Build</button>
+                                <button class="button btn-warning" id='<%= item.itemId %>'>Remove from Build</button>
                             <% } else { %>
-                                <button class="button">Add to Build</button>
+                                <button class="button" id='<%= item.itemId %>'>Add to Build</button>
                             <% } %>
                         </div>
                     </div>
