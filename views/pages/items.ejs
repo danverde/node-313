@@ -1,22 +1,57 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Items</title>
+    <title>
+        <%= itemTypeName %>
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/browse.css" />
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        [...document.querySelectorAll('')].forEach(ele => {
+            
+        });
+    })
+    </script>
 </head>
+
 <body>
-        <%- include('./header'); %>
-    <main>
-        <h1>Items</h1>
-        <!-- TODO display a message -->
-        <div id='itemList' class='flex-wrapper space-around'>
-            <!-- TODO build list of items -->
-        </div>
-    </main>
-    <%- include('./footer'); %>
+    <%- include('./header'); %>
+        <main>
+            <h1>
+                <%= itemTypeName %>
+            </h1>
+            <!-- TODO display a message -->
+            <div id='itemList' class='flex-wrapper space-around'>
+                <!-- TODO build list of items -->
+                <% items.forEach(item => { %>
+                    <div class='item-container' class='flex-wrapper space-around'>
+                        <img src='<%= item.itemImagePath %>'>
+                        <h4>
+                            <%= item.itemName %>
+                        </h4>
+                        <p class='price'>$
+                            <%= item.itemPrice %>
+                        </p>
+                        <p>
+                            <%= item.Description %>
+                        </p>
+                        <div>
+                            <% if (item.isActive === true) {%>
+                                <button class="button btn-warning">Remove from Build</button>
+                            <% } else { %>
+                                <button class="button">Add to Build</button>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </main>
+        <%- include('./footer'); %>
 </body>
+
 </html>

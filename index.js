@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
+const controller = require('./controller.js');
+const model = require('./model.js');
+
 
 const {
     Pool
@@ -13,7 +16,7 @@ const pool = new Pool({
 
 /* global server vars */
 var loggedIn = true;
-
+var activeBuildId = 1;
 
 /* setup express */
 var app = express();
@@ -113,8 +116,6 @@ app.get('/builds/:buildId', (req, res) => {
         totalPrice: 28
     };
 
-
-
     res.render('pages/builds', viewData);
 });
 
@@ -133,50 +134,44 @@ app.get('/items/:typeId', (req, res) => {
         return;
     }
 
-    res.render('pages/items', {
-        loggedIn
-    });
+    let viewData = {
+        loggedIn,
+        itemTypeName: 'Motherboards',
+        items: [{
+            itemId: 1,
+            itemName: 'Z97-AR.jpg',
+            itemPrice: 100,
+            itemDescription: 'This is really cool item that you shoud get',
+            itemImagePath: '/images/z97ar.jpg',
+            isActive: true
+        }, {
+            itemId: 2,
+            itemName: 'x299e',
+            itemPrice: 30,
+            itemDescription: 'This is really cool item that you shoud get',
+            itemImagePath: '/images/x299e.jpg',
+            isActive: false
+        }],
+    };
+
+    res.render('pages/items', viewData);
 });
 
 
 /* all POST requests */
-app.post('/login', login);
-app.post('/register', register);
-app.post('/builds/:buildId', setActiveBuild);
-app.post('/items/:typeId/:itemId', addItemToBuild);
+app.post('/login', controller.login);
+app.post('/register', controller.register);
+app.post('/builds/:buildId', controller.setActiveBuild);
+app.post('/items/:typeId/:itemId', controller.addItemToBuild);
+
 
 /* all PUT requests */
-app.put('/items/:typeId/:itemId', changeitemQuantity);
+app.put('/items/:typeId/:itemId', controller.changeitemQuantity);
+
 
 /* all DELETE requests */
-app.delete('/items/:typeId/:itemId', deleteItem);
+app.delete('/items/:typeId/:itemId', controller.removeItemFromBuild);
+
+
 
 app.listen(PORT, () => console.log(`Listening at http://localhost:${PORT}`));
-
-
-/* helper functions */
-
-function login(req, res) {
-
-}
-
-function register(req, res) {
-
-}
-
-
-function setActiveBuild(req, res) {
-
-}
-
-function addItemToBuild(req, res) {
-
-}
-
-function changeitemQuantity(req, res) {
-
-}
-
-function deleteItem(req, res) {
-
-}
