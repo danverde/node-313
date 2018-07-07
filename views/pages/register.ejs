@@ -19,23 +19,23 @@
             <!-- TODO display a message if needed -->
             <!-- TODO make form sticky -->
             <div class="form-wrapper flex-wrapper space-between">
-                <form method="POST" action="controller.php">
+                <form method="POST" action="/register">
                     <input type="hidden" name="action" value="register">
                     <div class="flex-wrapper space-between">
                         <label for="fName">First name:</label>
-                        <input type="text" id="fName" name="fName">
+                        <input type="text" id="fName" name="fName" required>
                     </div>
                     <div class="flex-wrapper space-between">
                         <label for="lName">Last name:</label>
-                        <input type="text" id="lName" name="lName">
+                        <input type="text" id="lName" name="lName" required>
                     </div>
                     <div class="flex-wrapper space-between">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" name="email">
+                        <input type="email" id="email" name="email" required>
                     </div>
                     <div class="flex-wrapper space-between">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password">
+                        <input type="password" id="password" name="password" required>
                     </div>
                     <div class="flex-wrapper space-between">
                         <label for="confirmPassword">Confirm Password:</label>

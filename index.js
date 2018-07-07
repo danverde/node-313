@@ -4,10 +4,16 @@ const PORT = process.env.PORT || 5000;
 const controller = require('./controller.js');
 const model = require('./model.js');
 
-
 // global server vars
 var loggedIn = true;
+var message = '';
 var activeBuildId = 1;
+
+var viewData = {
+    loggedIn,
+    message
+};
+
 
 /* setup express */
 var app = express();
@@ -30,7 +36,7 @@ app.get('/login', (req, res) => {
         return;
     }
 
-    res.render('pages/login', {loggedIn});
+    res.render('pages/login', viewData);
 });
 
 app.get('/logout', (req, res) => {
@@ -42,23 +48,10 @@ app.get('/logout', (req, res) => {
 
 
 app.get('/register', (req, res) => {
-    if (loggedIn === true) {
+    if (loggedIn === true) 
         res.redirect('/');
-        return;
-    }
-    
-    let userData;
-    
-    model.registerUser(userData, (err) => {
-        if (err) {
-            res.redirect('/register');
-            return;
-        }
-
-        res.render('pages/register', {
-            loggedIn
-        });
-    });
+    else 
+        res.render('pages/register', viewData);
 });
 
 app.get('/builds', (req, res) => {
@@ -71,34 +64,7 @@ app.get('/builds', (req, res) => {
     res.redirect(`builds/${activeBuildId}`);
 });
 
-app.get('/builds/:buildId', (req, res) => {
-    if (loggedIn === false) {
-        res.redirect('login');
-        return;
-    }
-
-    var buildId = req.params.buildId;
-
-    model.getBuildById(buildId, (err, build) => {
-        if (err) {
-            //TODO handle error
-        }
-
-        /* calculate total price */
-        var totalPrice = build.reduce((totalPrice, item) => {
-            totalPrice += item.itemPrice;
-            return totalPrice;
-        }, 0);
-
-        let viewData = {
-            loggedIn,
-            items: build,
-            totalPrice
-        };
-        
-        res.render('pages/builds', viewData);
-    });
-});
+app.get('/builds/:buildId', controller.getBuild);
 
 app.get('/items', (req, res) => {
     if (loggedIn === false) {

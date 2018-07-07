@@ -30,42 +30,79 @@ function registerUser(credentials, cb) {
 }
 
 function getBuildById(id, cb) {
-
-    var build = [{
-        itemTypeId: 1,
-        itemTypeName: 'Motherboard',
-        itemId: 7,
-        itemName: 'Cheapie MB',
-        itemPrice: 25
-    }, {
-        itemTypeId: 2,
-        itemTypeName: 'RAM',
-        itemId: 18,
-        itemName: 'Cheapie RAM',
-        itemPrice: 3
-    }];
+    var build;
+    if (id == 1) {
+        build = [{
+            itemTypeId: 1,
+            itemTypeName: 'Motherboard',
+            itemId: 7,
+            itemName: 'Cheapie MB',
+            itemPrice: 25
+        }, {
+            itemTypeId: 2,
+            itemTypeName: 'RAM',
+            itemId: 18,
+            itemName: 'Cheapie RAM',
+            itemPrice: 3
+        }];
+    } else {
+        build = [{
+            itemTypeId: 1,
+            itemTypeName: 'Motherboard',
+            itemId: 8,
+            itemName: 'Pricy MB',
+            itemPrice: 200
+        }, {
+            itemTypeId: 2,
+            itemTypeName: 'RAM',
+            itemId: 18,
+            itemName: 'Pricy RAM',
+            itemPrice: 125
+        }];
+    }
 
     cb(null, build);
 }
 
 function getItemsByType(typeId, cb) {
-    var items = [{
-        itemId: 1,
-        itemName: 'Z97-AR.jpg',
-        itemPrice: 100,
-        itemDescription: 'This is really cool item that you shoud get',
-        itemImagePath: '/images/z97ar.jpg',
-        isActive: true
-    }, {
-        itemId: 2,
-        itemName: 'x299e',
-        itemPrice: 30,
-        itemDescription: 'This is really cool item that you shoud get',
-        itemImagePath: '/images/x299e.jpg',
-        isActive: false
-    }];
+    var items,
+        itemTypeName;
+    if (typeId == 1) {
+        itemTypeName = 'Motherboards';
+        items = [{
+            itemId: 1,
+            itemName: 'Z97-AR.jpg',
+            itemPrice: 100,
+            itemDescription: 'This is really cool item that you shoud get',
+            itemImagePath: '/images/z97ar.jpg',
+            isActive: true
+        }, {
+            itemId: 2,
+            itemName: 'x299e',
+            itemPrice: 30,
+            itemDescription: 'This is really cool item that you shoud get',
+            itemImagePath: '/images/x299e.jpg',
+            isActive: false
+        }];
+    } else {
+        itemTypeName = 'RAM';
+        items = [{
+            itemId: 3,
+            itemName: 'Tridentz RGB',
+            itemPrice: 100,
+            itemDescription: 'This is really cool item that you shoud get',
+            itemImagePath: '/images/tridentz.jpg',
+            isActive: true
+        }, {
+            itemId: 4,
+            itemName: 'Corsair Vengance',
+            itemPrice: 30,
+            itemDescription: 'This is really cool item that you shoud get',
+            itemImagePath: '/images/vengance.jpg',
+            isActive: false
+        }];
+    }
 
-    var itemTypeName = 'Motherboards';
 
     cb(null, items, itemTypeName);
 }

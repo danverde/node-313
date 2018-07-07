@@ -29,7 +29,9 @@
         <h1>My Build</h1>
         <button class='button btn-warning' id="deleteBuild">Delete Build</button>
     </div>
-        <!-- TODO display a message if needed -->
+        <% if (message.text != '') { %>
+            <div class="message <%= message.type %>"><p><%= message.text %></p></div>
+        <% } %>
         <table>
             <thead>
                 <tr>
