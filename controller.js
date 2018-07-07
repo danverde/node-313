@@ -98,7 +98,7 @@ function getItems(req, res) {
 
                 viewData.items.forEach(item => {
                     if (item.itemId === activeItemId)
-                        item.active = true;
+                        item.isActive = true;
                 });
             }
 
