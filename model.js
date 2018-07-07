@@ -59,10 +59,14 @@ function removeItemFromBuild(buildId, itemId, cb) {
     if (buildId == 1) {
         build1 = build1.filter(item => item.itemId != itemId);
         cb(null, build1);
+        console.log('\n', build1);
     } else {
         build2 = build2.filter(item => item.itemId != itemId);
         cb(null, build2);
+        console.log('\n', build2);
     }
+
+    
 }
 
 module.exports = {
@@ -110,13 +114,13 @@ var motherboards = [{
     itemId: 1,
     itemName: 'Z97-AR.jpg',
     itemPrice: 100,
-    itemDescription: 'This is really cool item that you shoud get',
+    itemDescription: 'This is a really cool item that you shoud get',
     itemImagePath: '/images/z97ar.jpg',
 }, {
     itemId: 2,
     itemName: 'x299e',
     itemPrice: 30,
-    itemDescription: 'This is really cool item that you shoud get',
+    itemDescription: 'This is a really cool item that you shoud get',
     itemImagePath: '/images/x299e.jpg',
 }];
 
@@ -124,12 +128,12 @@ var ram = [{
     itemId: 3,
     itemName: 'Tridentz RGB',
     itemPrice: 100,
-    itemDescription: 'This is really cool item that you shoud get',
+    itemDescription: 'This is a really cool item that you shoud get',
     itemImagePath: '/images/tridentz.jpg',
 }, {
     itemId: 4,
     itemName: 'Corsair Vengance',
     itemPrice: 30,
-    itemDescription: 'This is really cool item that you shoud get',
+    itemDescription: 'This is a really cool item that you shoud get',
     itemImagePath: '/images/vengance.jpg',
 }];

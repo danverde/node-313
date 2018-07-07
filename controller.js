@@ -90,8 +90,9 @@ function getItems(req, res) {
                 console.log(err);
             }
 
+            console.log('bleh\n',build);
             var buildItem = build.find(buildItem => buildItem.itemTypeId == typeId);
-            console.log(buildItem);
+            // console.log(buildItem);
 
             if (buildItem) {
                 var activeItemId = buildItem.itemId;
@@ -101,7 +102,7 @@ function getItems(req, res) {
                         item.isActive = true;
                 });
             }
-
+            
             res.render('pages/items', viewData);
         });
     });
