@@ -136,7 +136,17 @@ function changeitemQuantity(req, res) {
 
 /* DELETE */
 function removeItemFromBuild(req, res) {
+    var buildId = req.params.buildId;
+    var itemId = req.params.itemId;
 
+    model.removeItemFromBuild(buildId, itemId, (err, build) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        res.json(build);
+    });
 }
 
 module.exports = {

@@ -85,7 +85,7 @@ app.get('/items/:typeId', (req, res) => {
 
     model.getItemsByType(typeId, (err, items, itemTypeName) => {
         if (err) {
-            //TODO handlee error
+            //TODO handle error
         }
 
         let viewData = {
@@ -103,15 +103,15 @@ app.get('/items/:typeId', (req, res) => {
 app.post('/login', controller.login);
 app.post('/register', controller.register);
 app.post('/builds/:buildId', controller.setActiveBuild);
-app.post('/items/:typeId/:itemId', controller.addItemToBuild);
+app.post('/builds/:buildId/:itemId', controller.addItemToBuild);
 
 
 /* all PUT requests */
-app.put('/items/:typeId/:itemId', controller.changeitemQuantity);
+app.put('/builds/:buildId/:itemId', controller.changeitemQuantity);
 
 
 /* all DELETE requests */
-app.delete('/items/:typeId/:itemId', controller.removeItemFromBuild);
+app.delete('/builds/:buildId/:itemId', controller.removeItemFromBuild);
 
 
 

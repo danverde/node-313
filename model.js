@@ -32,33 +32,9 @@ function registerUser(credentials, cb) {
 function getBuildById(id, cb) {
     var build;
     if (id == 1) {
-        build = [{
-            itemTypeId: 1,
-            itemTypeName: 'Motherboard',
-            itemId: 7,
-            itemName: 'Cheapie MB',
-            itemPrice: 25
-        }, {
-            itemTypeId: 2,
-            itemTypeName: 'RAM',
-            itemId: 18,
-            itemName: 'Cheapie RAM',
-            itemPrice: 3
-        }];
+        build = build1;
     } else {
-        build = [{
-            itemTypeId: 1,
-            itemTypeName: 'Motherboard',
-            itemId: 8,
-            itemName: 'Pricy MB',
-            itemPrice: 200
-        }, {
-            itemTypeId: 2,
-            itemTypeName: 'RAM',
-            itemId: 18,
-            itemName: 'Pricy RAM',
-            itemPrice: 125
-        }];
+        build = build2;
     }
 
     cb(null, build);
@@ -69,42 +45,24 @@ function getItemsByType(typeId, cb) {
         itemTypeName;
     if (typeId == 1) {
         itemTypeName = 'Motherboards';
-        items = [{
-            itemId: 1,
-            itemName: 'Z97-AR.jpg',
-            itemPrice: 100,
-            itemDescription: 'This is really cool item that you shoud get',
-            itemImagePath: '/images/z97ar.jpg',
-            isActive: true
-        }, {
-            itemId: 2,
-            itemName: 'x299e',
-            itemPrice: 30,
-            itemDescription: 'This is really cool item that you shoud get',
-            itemImagePath: '/images/x299e.jpg',
-            isActive: false
-        }];
+        items = motherboards;
     } else {
         itemTypeName = 'RAM';
-        items = [{
-            itemId: 3,
-            itemName: 'Tridentz RGB',
-            itemPrice: 100,
-            itemDescription: 'This is really cool item that you shoud get',
-            itemImagePath: '/images/tridentz.jpg',
-            isActive: true
-        }, {
-            itemId: 4,
-            itemName: 'Corsair Vengance',
-            itemPrice: 30,
-            itemDescription: 'This is really cool item that you shoud get',
-            itemImagePath: '/images/vengance.jpg',
-            isActive: false
-        }];
+        items = ram;
     }
 
 
     cb(null, items, itemTypeName);
+}
+
+function removeItemFromBuild(buildId, itemId, cb) {
+    if (buildId == 1) {
+        build1 = build1.filter(item => item.itemId != itemId);
+        cb(null, build1);
+    } else {
+        build2 = build2.filter(item => item.itemId != itemId);
+        cb(null, build2);
+    }
 }
 
 module.exports = {
@@ -113,4 +71,69 @@ module.exports = {
     registerUser,
     getBuildById,
     getItemsByType,
+    removeItemFromBuild,
 };
+
+
+/* HARD-CODED values for testing */
+/* Eventually these will be replaced by the DB... */
+
+var build1 = [{
+    itemTypeId: 1,
+    itemTypeName: 'Motherboard',
+    itemId: 7,
+    itemName: 'Cheapie MB',
+    itemPrice: 25
+}, {
+    itemTypeId: 2,
+    itemTypeName: 'RAM',
+    itemId: 18,
+    itemName: 'Cheapie RAM',
+    itemPrice: 3
+}];
+
+var build2 = [{
+    itemTypeId: 1,
+    itemTypeName: 'Motherboard',
+    itemId: 8,
+    itemName: 'Pricy MB',
+    itemPrice: 200
+}, {
+    itemTypeId: 2,
+    itemTypeName: 'RAM',
+    itemId: 18,
+    itemName: 'Pricy RAM',
+    itemPrice: 125
+}];
+
+var motherboards = [{
+    itemId: 1,
+    itemName: 'Z97-AR.jpg',
+    itemPrice: 100,
+    itemDescription: 'This is really cool item that you shoud get',
+    itemImagePath: '/images/z97ar.jpg',
+    isActive: true
+}, {
+    itemId: 2,
+    itemName: 'x299e',
+    itemPrice: 30,
+    itemDescription: 'This is really cool item that you shoud get',
+    itemImagePath: '/images/x299e.jpg',
+    isActive: false
+}];
+
+var ram = [{
+    itemId: 3,
+    itemName: 'Tridentz RGB',
+    itemPrice: 100,
+    itemDescription: 'This is really cool item that you shoud get',
+    itemImagePath: '/images/tridentz.jpg',
+    isActive: true
+}, {
+    itemId: 4,
+    itemName: 'Corsair Vengance',
+    itemPrice: 30,
+    itemDescription: 'This is really cool item that you shoud get',
+    itemImagePath: '/images/vengance.jpg',
+    isActive: false
+}];

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,36 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/build.css" />
     <script>
-        function removeItemFromBuild(itemId) {
+        async function removeItemFromBuild(itemId) {
             //TODO fetch to DELETE item from build
             console.log('removing item with id', itemId);
+            var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
+
+            var res = await fetch(`/builds/${buildId}/${itemId}`, {
+                method: 'DELETE'
+            });
+            var build = await res.json();
+            console.log('build:', build);
+
+            /* clear build */
+            var table = document.querySelector('tbody');
+            table.innerHTML = '';
+            build.forEach(item => {
+                table.insertAdjacentHTML('beforeend', 
+                `<td>
+                    ${item.itemTypeName}
+                </td>
+                <td>
+                    ${item.itemName}
+                </td>
+                <td>
+                    <button class="button btn-warning" id="${item.itemId}">Remove</button>
+                </td>
+                <td>
+                    ${item.itemPrice}
+                </td>`);
+            })
+
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -22,47 +50,61 @@
         });
     </script>
 </head>
+
 <body>
-        <%- include('./header') %> 
-    <main>
-    <div class='flex-wrapper space-between'>
-        <h1>My Build</h1>
-        <button class='button btn-warning' id="deleteBuild">Delete Build</button>
-    </div>
-        <% if (message.text != '') { %>
-            <div class="message <%= message.type %>"><p><%= message.text %></p></div>
-        <% } %>
-        <table>
-            <thead>
-                <tr>
-                    <th>Component Type</th>
-                    <th>Name</th>
-                    <th></th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% items.forEach((item) => { %>
-                    <tr>
-                        <td><%= item.itemTypeName %></td>
-                        <td><%= item.itemName %></td>
-                        <td>
-                            <button class="button btn-warning" id="<%= item.itemId %>">Remove</button>
-                        </td>
-                        <td><%= item.itemPrice %> </td>
-                    </tr>
-                <% }) %>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <th>Total:</th>
-                    <td>$<%= totalPrice %></td>
-                </tr>
-            </tfoot>
-        </table>
-    </main>
-    <%- include('footer') %> 
+    <%- include('./header') %>
+        <main>
+            <div class='flex-wrapper space-between'>
+                <h1>My Build</h1>
+                <button class='button btn-warning' id="deleteBuild">Delete Build</button>
+            </div>
+            <% if (message.text != '') { %>
+                <div class="message <%= message.type %>">
+                    <p>
+                        <%= message.text %>
+                    </p>
+                </div>
+                <% } %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component Type</th>
+                                <th>Name</th>
+                                <th></th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% items.forEach((item) => { %>
+                                <tr>
+                                    <td>
+                                        <%= item.itemTypeName %>
+                                    </td>
+                                    <td>
+                                        <%= item.itemName %>
+                                    </td>
+                                    <td>
+                                        <button class="button btn-warning" id="<%= item.itemId %>">Remove</button>
+                                    </td>
+                                    <td>$
+                                        <%= item.itemPrice %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <th>Total:</th>
+                                <td>$
+                                    <%= totalPrice %>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+        </main>
+        <%- include('footer') %>
 </body>
+
 </html>
