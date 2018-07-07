@@ -75,28 +75,7 @@ app.get('/items', (req, res) => {
     res.redirect('items/1');
 });
 
-app.get('/items/:typeId', (req, res) => {
-    if (loggedIn === false) {
-        res.redirect('login');
-        return;
-    }
-
-    var typeId = req.params.typeId;
-
-    model.getItemsByType(typeId, (err, items, itemTypeName) => {
-        if (err) {
-            //TODO handle error
-        }
-
-        let viewData = {
-            loggedIn,
-            itemTypeName,
-            items,
-        };
-        
-        res.render('pages/items', viewData);
-    });
-});
+app.get('/items/:typeId', controller.getItems);
 
 
 /* all POST requests */

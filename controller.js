@@ -65,6 +65,47 @@ function getBuild(req, res) {
     });
 }
 
+
+function getItems(req, res) {
+    if (loggedIn === false) {
+        res.redirect('login');
+        return;
+    }
+
+    var typeId = req.params.typeId;
+
+    model.getItemsByType(typeId, (err, items, itemTypeName) => {
+        if (err) {
+            //TODO handle error
+        }
+
+        var viewData = {
+            loggedIn,
+            itemTypeName,
+            items,
+        };
+
+        model.getBuildById(activeBuildId, (err, build) => {
+            if (err) {
+                console.log(err);
+            }
+
+            var buildItem = build.find(buildItem => buildItem.itemTypeId == typeId);
+            console.log(buildItem);
+
+            if (buildItem) {
+                var activeItemId = buildItem.itemId;
+
+                viewData.items.forEach(item => {
+                    if (item.itemId === activeItemId)
+                        item.active = true;
+                });
+            }
+
+            res.render('pages/items', viewData);
+        });
+    });
+}
 /* POST */
 function login(req, res) {
     var email = req.body.email;
@@ -152,6 +193,7 @@ function removeItemFromBuild(req, res) {
 module.exports = {
     goHome,
     getBuild,
+    getItems,
     login,
     logout,
     register,

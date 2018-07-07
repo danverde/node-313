@@ -81,29 +81,29 @@ module.exports = {
 var build1 = [{
     itemTypeId: 1,
     itemTypeName: 'Motherboard',
-    itemId: 7,
-    itemName: 'Cheapie MB',
-    itemPrice: 25
+    itemId: 1,
+    itemName: 'Z97-AR.jpg',
+    itemPrice: 100
 }, {
     itemTypeId: 2,
     itemTypeName: 'RAM',
-    itemId: 18,
-    itemName: 'Cheapie RAM',
-    itemPrice: 3
+    itemId: 3,
+    itemName: 'Tridentz RGB',
+    itemPrice: 100
 }];
 
 var build2 = [{
     itemTypeId: 1,
     itemTypeName: 'Motherboard',
-    itemId: 8,
-    itemName: 'Pricy MB',
-    itemPrice: 200
+    itemId: 2,
+    itemName: 'x299e',
+    itemPrice: 30
 }, {
     itemTypeId: 2,
     itemTypeName: 'RAM',
-    itemId: 18,
-    itemName: 'Pricy RAM',
-    itemPrice: 125
+    itemId: 4,
+    itemName: 'Corsair Vengance',
+    itemPrice: 30
 }];
 
 var motherboards = [{
@@ -112,14 +112,12 @@ var motherboards = [{
     itemPrice: 100,
     itemDescription: 'This is really cool item that you shoud get',
     itemImagePath: '/images/z97ar.jpg',
-    isActive: true
 }, {
     itemId: 2,
     itemName: 'x299e',
     itemPrice: 30,
     itemDescription: 'This is really cool item that you shoud get',
     itemImagePath: '/images/x299e.jpg',
-    isActive: false
 }];
 
 var ram = [{
@@ -128,12 +126,10 @@ var ram = [{
     itemPrice: 100,
     itemDescription: 'This is really cool item that you shoud get',
     itemImagePath: '/images/tridentz.jpg',
-    isActive: true
 }, {
     itemId: 4,
     itemName: 'Corsair Vengance',
     itemPrice: 30,
     itemDescription: 'This is really cool item that you shoud get',
     itemImagePath: '/images/vengance.jpg',
-    isActive: false
 }];

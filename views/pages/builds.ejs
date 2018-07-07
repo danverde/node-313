@@ -23,10 +23,12 @@
             /* clear build */
             var table = document.querySelector('tbody');
             table.innerHTML = '';
+
+            /* recreate build */
             build.forEach(item => {
                 table.insertAdjacentHTML('beforeend', 
                 `<td>
-                    ${item.itemTypeName}
+                    <a href='' >${item.itemTypeName}</a>
                 </td>
                 <td>
                     ${item.itemName}
@@ -78,7 +80,7 @@
                             <% items.forEach((item) => { %>
                                 <tr>
                                     <td>
-                                        <%= item.itemTypeName %>
+                                        <a href="/items/<%= item.itemTypeId %>"><%= item.itemTypeName %></a>
                                     </td>
                                     <td>
                                         <%= item.itemName %>
