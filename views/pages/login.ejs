@@ -16,16 +16,15 @@
         <h1>Login</h1>
         <!-- TODO Display a message if needed -->
             <div class="form-wrapper">
-                <form method="POST" action="controller.php">
-                    <input type='hidden' name='action' value='login'>
+                <form method="POST" action="/login">
                     <div class="flex-wrapper space-between">
                         <label for="email">Email:</label>
                         <!-- TODO make email sticky? -->
-                        <input type="email" id="email" name="email">
+                        <input type="email" id="email" name="email" reequired>
                     </div>
                     <div class="flex-wrapper space-between">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password">
+                        <input type="password" id="password" name="password" required>
                     </div>
                     <input type="submit" class="button" value="Login">
                 </form>

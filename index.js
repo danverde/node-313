@@ -5,16 +5,7 @@ const controller = require('./controller.js');
 const model = require('./model.js');
 
 
-const {
-    Pool
-} = require('pg');
-const connectionString = process.env.DATABASE_URL; // TODO get this working! || 'postgres://ta_user:ta_pass@localhost:5432/familyhistory';
-const pool = new Pool({
-    connectionString: connectionString
-});
-
-
-/* global server vars */
+// global server vars
 var loggedIn = true;
 var activeBuildId = 1;
 
@@ -31,26 +22,15 @@ app.set('view engine', 'ejs');
 
 
 /* All GET requests */
-app.get('/', (req, res) => {
-    if (loggedIn === false) {
-        res.redirect('login');
+app.get('/', controller.goHome);
+app.get('/login', (req, res) => {
+    /* shouldn't be able to log in if you're lready logged in... */
+    if (loggedIn === true) {
+        res.redirect('/');
         return;
     }
 
-    //TODO get data from DB
-
-    let viewData = {
-        loggedIn,
-        itemTypes: [{
-            itemTypeName: 'Motherboards',
-            itemTypeId: 1
-        }, {
-            itemTypeName: 'RAM',
-            itemTypeId: 2
-        }]
-    };
-
-    res.render('pages/home', viewData);
+    res.render('pages/login', {loggedIn});
 });
 
 app.get('/logout', (req, res) => {
@@ -60,24 +40,24 @@ app.get('/logout', (req, res) => {
     res.redirect('login');
 });
 
-app.get('/login', (req, res) => {
-    /* shouldn't be able to log in if you're lready logged in... */
-    if (loggedIn === true)
-        res.redirect('/');
-    else
-        res.render('pages/login', {
-            loggedIn
-        });
-});
 
 app.get('/register', (req, res) => {
     if (loggedIn === true) {
         res.redirect('/');
         return;
     }
+    
+    let userData;
+    
+    model.registerUser(userData, (err) => {
+        if (err) {
+            res.redirect('/register');
+            return;
+        }
 
-    res.render('pages/register', {
-        loggedIn
+        res.render('pages/register', {
+            loggedIn
+        });
     });
 });
 
@@ -97,26 +77,27 @@ app.get('/builds/:buildId', (req, res) => {
         return;
     }
 
-    //TODO get buildID from DB
-    let viewData = {
-        loggedIn,
-        items: [{
-            itemTypeId: 1,
-            itemTypeName: 'Motherboard'    ,
-            itemId: 7,
-            itemName: 'Cheapie MB',
-            itemPrice: 25
-        }, {
-            itemTypeId: 2,
-            itemTypeName: 'RAM'    ,
-            itemId: 18,
-            itemName: 'Cheapie RAM',
-            itemPrice: 3
-        }],
-        totalPrice: 28
-    };
+    var buildId = req.params.buildId;
 
-    res.render('pages/builds', viewData);
+    model.getBuildById(buildId, (err, build) => {
+        if (err) {
+            //TODO handle error
+        }
+
+        /* calculate total price */
+        var totalPrice = build.reduce((totalPrice, item) => {
+            totalPrice += item.itemPrice;
+            return totalPrice;
+        }, 0);
+
+        let viewData = {
+            loggedIn,
+            items: build,
+            totalPrice
+        };
+        
+        res.render('pages/builds', viewData);
+    });
 });
 
 app.get('/items', (req, res) => {
@@ -134,27 +115,21 @@ app.get('/items/:typeId', (req, res) => {
         return;
     }
 
-    let viewData = {
-        loggedIn,
-        itemTypeName: 'Motherboards',
-        items: [{
-            itemId: 1,
-            itemName: 'Z97-AR.jpg',
-            itemPrice: 100,
-            itemDescription: 'This is really cool item that you shoud get',
-            itemImagePath: '/images/z97ar.jpg',
-            isActive: true
-        }, {
-            itemId: 2,
-            itemName: 'x299e',
-            itemPrice: 30,
-            itemDescription: 'This is really cool item that you shoud get',
-            itemImagePath: '/images/x299e.jpg',
-            isActive: false
-        }],
-    };
+    var typeId = req.params.typeId;
 
-    res.render('pages/items', viewData);
+    model.getItemsByType(typeId, (err, items, itemTypeName) => {
+        if (err) {
+            //TODO handlee error
+        }
+
+        let viewData = {
+            loggedIn,
+            itemTypeName,
+            items,
+        };
+        
+        res.render('pages/items', viewData);
+    });
 });
 
 
