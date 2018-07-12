@@ -54,59 +54,61 @@
 </head>
 
 <body>
-    <%- include('./header') %>
+    <%- include('../partials/header') %>
         <main>
             <div class='flex-wrapper space-between'>
                 <h1>My Build</h1>
                 <button class='button btn-warning' id="deleteBuild">Clear Build</button>
             </div>
+
             <% if (message.text != '') { %>
-                <div class="message <%= message.type %>">
-                    <p>
-                        <%= message.text %>
-                    </p>
-                </div>
-                <% } %>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Component Type</th>
-                                <th>Name</th>
-                                <th></th>
-                                <th>Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% items.forEach((item) => { %>
-                                <tr>
-                                    <td>
-                                        <a href="/items/<%= item.itemTypeId %>"><%= item.itemTypeName %></a>
-                                    </td>
-                                    <td>
-                                        <%= item.itemName %>
-                                    </td>
-                                    <td>
-                                        <button class="button btn-warning" id="<%= item.itemId %>">Remove</button>
-                                    </td>
-                                    <td>$
-                                        <%= item.itemPrice %>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <th>Total:</th>
-                                <td>$
-                                    <%= totalPrice %>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+            <div class="message <%= message.type %>">
+                <p>
+                    <%= message.text %>
+                </p>
+            </div>
+            <% } %>
+                
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component Type</th>
+                        <th>Name</th>
+                        <th></th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% items.forEach((item) => { %>
+                        <tr>
+                            <td>
+                                <a href="/items/<%= item.itemTypeId %>"><%= item.itemTypeName %></a>
+                            </td>
+                            <td>
+                                <%= item.itemName %>
+                            </td>
+                            <td>
+                                <button class="button btn-warning" id="<%= item.itemId %>">Remove</button>
+                            </td>
+                            <td>$
+                                <%= item.itemPrice %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <th>Total:</th>
+                        <td>$
+                            <%= totalPrice %>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </main>
-        <%- include('footer') %>
+        <%- include('../partials/footer') %>
 </body>
 
 </html>

@@ -11,12 +11,19 @@
 </head>
 
 <body>
-        <%- include('./header', {loggedIn: loggedIn}); %>
+        <%- include('../partials/header', {loggedIn: loggedIn}); %>
     <main>
         <div class='main-banner'></div>
         <div id="register">
             <h1>Register</h1>
-            <!-- TODO display a message if needed -->
+            <% if (message.text != '') { %>
+            <div class="message <%= message.type %>">
+                <p>
+                    <%= message.text %>
+                </p>
+            </div>
+            <% } %>
+
             <!-- TODO make form sticky -->
             <div class="form-wrapper flex-wrapper space-between">
                 <form method="POST" action="/register">
@@ -49,7 +56,7 @@
             </div>
         </div>
     </main>
-    <%- include('./footer'); %>
+    <%- include('../partials/footer'); %>
 </body>
 
 </html>

@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <%- include('./header', {loggedIn: loggedIn}); %>
+    <%- include('../partials/header', {loggedIn: loggedIn}); %>
         <main>
             <div class='main-banner'></div>
             <div id="about">
@@ -19,6 +19,16 @@
                 <p>This is a super cool &amp; important message all about this website, computers, tacos, and other nerdy stuff.
                     Yay! (Just kidding about the 🌮's... Sorry...)</p>
             </div>
+
+            <!-- TODO is this in the correct spot? -->
+            <% if (message.text != '') { %>
+            <div class="message <%= message.type %>">
+                <p>
+                    <%= message.text %>
+                </p>
+            </div>
+            <% } %>
+
             <div id="parts" class="flex-wrapper">
                 <!-- TODO Create a link for each item type! -->
                 <% itemTypes.forEach((item) => { %>
@@ -26,7 +36,7 @@
                 <% }) %>
             </div>
         </main>
-        <%- include('footer') %>
+        <%- include('../partials/footer') %>
 </body>
 
 </html>

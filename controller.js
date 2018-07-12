@@ -101,11 +101,16 @@ function getItems(req, res) {
 function login(req, res) {
     var email = req.body.email;
     var password = req.body.password;
+    req.session.message = {
+        text: '',
+        type: ''
+    };
 
     /* make sure an email & password were provided */
-    if (!email || !password) {
-        // req.session.message.text = 'Missing Email OR Password';
-        // req.session.message.type = 'error';
+    // if (email || password) { // TESTING
+    if (!email || !password) { 
+        req.session.message.text = 'Missing Email OR Password';
+        req.session.message.type = 'error';
         console.error(new Error('Missing Email OR Password'));
         res.redirect('/login');
         return;

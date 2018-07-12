@@ -44,12 +44,20 @@
 </head>
 
 <body>
-    <%- include('./header'); %>
+    <%- include('../partials/header'); %>
         <main>
             <h1>
                 <%= itemTypeName %>
             </h1>
-            <!-- TODO display a message -->
+            
+            <% if (message.text != '') { %>
+            <div class="message <%= message.type %>">
+                <p>
+                    <%= message.text %>
+                </p>
+            </div>
+            <% } %>
+
             <div id='itemList' class='flex-wrapper space-around'>
                 <!-- TODO build list of items -->
                 <% items.forEach(item => { %>
@@ -75,7 +83,7 @@
                 <% }); %>
             </div>
         </main>
-        <%- include('./footer'); %>
+        <%- include('../partials/footer'); %>
 </body>
 
 </html>
