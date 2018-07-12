@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/build.css" />
     <script>
         function buildPage(build) {
+            /* clear build */
             var table = document.querySelector('tbody');
             table.innerHTML = '';
 
@@ -32,7 +33,6 @@
         }
 
         async function removeItemFromBuild(itemId) {
-            //TODO fetch to DELETE item from build
             console.log('removing item with id', itemId);
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
 
@@ -40,33 +40,28 @@
                 method: 'DELETE'
             });
             var build = await res.json();
-            console.log('build:', build);
+            // console.log('build:', build);
+            
+            buildPage(build);
+        }
+        
+        async function clearBuild() {
+            // WARNING this is a very bad way to get the buildId. Maybe use the session instead?
+            var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
+            var res = await fetch(`/builds/${buildId}`, {
+                method: 'DELETE'
+            });
+            // console.log('build:', build);
+            var build = await res.json();
 
             buildPage(build);
-
-            /* clear build */
-            // var table = document.querySelector('tbody');
-            // table.innerHTML = '';
-
-            // /* recreate build */
-            // build.forEach(item => {
-            //     table.insertAdjacentHTML('beforeend', 
-            //     `<td>
-            //         <a href='' >${item.itemTypeName}</a>
-            //     </td>
-            //     <td>
-            //         ${item.itemName}
-            //     </td>
-            //     <td>
-            //         <button class="button btn-warning" id="${item.itemId}">Remove</button>
-            //     </td>
-            //     <td>
-            //         ${item.itemPrice}
-            //     </td>`);
-            // });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            /* add event listener for clear build buton */
+            document.getElementById('deleteBuild').addEventListener('click', clearBuild);
+
+            /* add event listener for remove item buttons */
             [...document.querySelectorAll('tbody .button')].forEach((button) => {
                 button.addEventListener('click', () => {
                     removeItemFromBuild(button.id);

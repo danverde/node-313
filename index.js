@@ -76,6 +76,7 @@ app.put('/builds/:buildId/:itemId', controller.changeitemQuantity);
 
 
 /* All DELETE requests */
+app.delete('/builds/:buildId', controller.clearBuild);
 app.delete('/builds/:buildId/:itemId', controller.removeItemFromBuild);
 
 

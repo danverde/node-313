@@ -107,7 +107,7 @@ function login(req, res) {
     };
 
     /* make sure an email & password were provided */
-    if (!email || !password) { 
+    if (!email || !password) {
         req.session.message.text = 'Missing Email OR Password';
         req.session.message.type = 'error';
         console.error(new Error('Missing Email OR Password'));
@@ -211,6 +211,17 @@ function removeItemFromBuild(req, res) {
     });
 }
 
+function clearBuild(req, res) {
+    var buildId = req.params.buildId;
+    model.clearBuild(buildId, (err, build) => {
+        if (err) {
+            console.error(err);
+            // TODO add error handling
+        }
+
+        res.json(build);
+    });
+}
 /* Middleware */
 
 function verifyLogin(req, res, next) {
@@ -245,6 +256,7 @@ module.exports = {
     addItemToBuild,
     changeitemQuantity,
     removeItemFromBuild,
+    clearBuild,
     verifyLogin,
     logRequest,
     clearMessage,

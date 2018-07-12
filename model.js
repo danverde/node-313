@@ -71,8 +71,16 @@ function removeItemFromBuild(buildId, itemId, cb) {
         cb(null, build2);
         console.log('\n', build2);
     }
+}
 
-    
+function clearBuild(buildId, cb) {
+    // var build;
+
+    if (buildId == 1) {
+        build1 = [];
+        cb(null, build1);
+    }
+
 }
 
 module.exports = {
@@ -82,6 +90,7 @@ module.exports = {
     getBuildById,
     getItemsByType,
     removeItemFromBuild,
+    clearBuild,
 };
 
 
