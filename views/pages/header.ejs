@@ -3,7 +3,7 @@
         <h1><a href='/'>PC Builder</a></h1>
         <nav>
             <% if (loggedIn === true) { %>
-                <a class='button' href='/logout'>Logout</a>
+                <form method="POST" action="/logout"><button type="submit" class='button'>Logout</button></form>
                 <a class='button btn-primary' href='/builds'>My Build</a>
             <% } else {%>
                 <a class='button' href='/login'>Login</a>

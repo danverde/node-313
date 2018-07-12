@@ -21,7 +21,8 @@ function getItemTypes(cb) {
 
 function getLoginCredentials(email, cb) {
     var passwordHash = '$2a$10$kpAxG/axNjzmkQ6tYJLLQOct8qBzvg.G6lIh6QQuM8m5HPYrRX/G.';
-    cb(null, passwordHash);
+    var userId = 1;
+    cb(null, passwordHash, userId);
 }
 
 function registerUser(credentials, cb) {

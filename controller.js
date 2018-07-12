@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt-nodejs');
+const chalk = require('chalk');
 
 const model = require('./model.js');
 
@@ -14,11 +15,12 @@ var message = {
 function goHome(req, res) {
     model.getItemTypes((err, itemTypes) => {
         if (err) {
-            //TODO handle err
+            console.log('unabel to access model');
+            console.error(err);
         }
 
         var viewData = {
-            loggedIn,
+            loggedIn: req.session.email != undefined,
             itemTypes
         };
 
@@ -101,12 +103,13 @@ function login(req, res) {
         return;
     }
 
-    model.getLoginCredentials(email, (err, passwordHash) => {
+    model.getLoginCredentials(email, (err, passwordHash, userId) => {
         if (err) {
             console.error(err);
             res.redirect('/login');
             return;
         }
+        // Check to see if userId is null (no match)!!
 
         bcrypt.compare(password, passwordHash, (err, match) => {
             if (err) {
@@ -115,9 +118,11 @@ function login(req, res) {
                 return;
             }
 
-
             if (match === true) {
+
+                model.getUserBuild;
                 req.session.email = email;
+                req.session.loggedIn = false;
                 res.redirect('/');
                 return;
             }
@@ -127,7 +132,8 @@ function login(req, res) {
 }
 
 function logout(req, res) {
-
+    req.session.destroy();
+    res.redirect('login');
 }
 
 function register(req, res) {
@@ -197,6 +203,10 @@ function verifyLogin(req, res, next) {
     next();
 }
 
+function logRequest(req, res, next) {
+    console.log(chalk.magenta(`${req.method}: ${req.url}`));
+    next();
+}
 
 module.exports = {
     goHome,
@@ -210,4 +220,5 @@ module.exports = {
     changeitemQuantity,
     removeItemFromBuild,
     verifyLogin,
+    logRequest,
 };

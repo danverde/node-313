@@ -86,6 +86,14 @@ header nav a {
     background-position: center;
 }
 
+nav>form {
+    display: inline;
+}
+
+nav>form>button[type='submit'] {
+    font-size: 17px;
+}
+
 /*** START TEMPLATES ***/
 .inline {
     display: inline-block;
