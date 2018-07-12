@@ -9,18 +9,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/build.css" />
     <script>
-        async function removeItemFromBuild(itemId) {
-            //TODO fetch to DELETE item from build
-            console.log('removing item with id', itemId);
-            var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
-
-            var res = await fetch(`/builds/${buildId}/${itemId}`, {
-                method: 'DELETE'
-            });
-            var build = await res.json();
-            console.log('build:', build);
-
-            /* clear build */
+        function buildPage(build) {
             var table = document.querySelector('tbody');
             table.innerHTML = '';
 
@@ -39,8 +28,42 @@
                 <td>
                     ${item.itemPrice}
                 </td>`);
-            })
+            });
+        }
 
+        async function removeItemFromBuild(itemId) {
+            //TODO fetch to DELETE item from build
+            console.log('removing item with id', itemId);
+            var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
+
+            var res = await fetch(`/builds/${buildId}/${itemId}`, {
+                method: 'DELETE'
+            });
+            var build = await res.json();
+            console.log('build:', build);
+
+            buildPage(build);
+
+            /* clear build */
+            // var table = document.querySelector('tbody');
+            // table.innerHTML = '';
+
+            // /* recreate build */
+            // build.forEach(item => {
+            //     table.insertAdjacentHTML('beforeend', 
+            //     `<td>
+            //         <a href='' >${item.itemTypeName}</a>
+            //     </td>
+            //     <td>
+            //         ${item.itemName}
+            //     </td>
+            //     <td>
+            //         <button class="button btn-warning" id="${item.itemId}">Remove</button>
+            //     </td>
+            //     <td>
+            //         ${item.itemPrice}
+            //     </td>`);
+            // });
         }
 
         document.addEventListener('DOMContentLoaded', () => {

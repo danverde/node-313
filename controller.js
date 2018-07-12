@@ -215,7 +215,7 @@ function removeItemFromBuild(req, res) {
 
 function verifyLogin(req, res, next) {
     if (!req.session.email) {
-        res.redirect('login');
+        res.redirect('/login');
         return;
     }
     next();

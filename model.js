@@ -58,7 +58,6 @@ function getItemsByType(typeId, cb) {
         items = ram;
     }
 
-
     cb(null, items, itemTypeName);
 }
 
