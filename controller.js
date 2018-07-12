@@ -107,7 +107,6 @@ function login(req, res) {
     };
 
     /* make sure an email & password were provided */
-    // if (email || password) { // TESTING
     if (!email || !password) { 
         req.session.message.text = 'Missing Email OR Password';
         req.session.message.type = 'error';
@@ -227,6 +226,14 @@ function logRequest(req, res, next) {
     next();
 }
 
+function clearMessage(req) {
+    req.session.message = {
+        text: '',
+        type: ''
+    };
+    return req;
+}
+
 module.exports = {
     goHome,
     getBuild,
@@ -240,4 +247,5 @@ module.exports = {
     removeItemFromBuild,
     verifyLogin,
     logRequest,
+    clearMessage,
 };

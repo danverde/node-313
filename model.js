@@ -20,8 +20,14 @@ function getItemTypes(cb) {
 }
 
 function getLoginCredentials(email, cb) {
-    var passwordHash = '$2a$10$kpAxG/axNjzmkQ6tYJLLQOct8qBzvg.G6lIh6QQuM8m5HPYrRX/G.';
-    var userId = 1;
+    var passwordHash = null;
+    var userId = null;
+
+    if (email === 'bleh@gmail.com') {
+        passwordHash = '$2a$10$kpAxG/axNjzmkQ6tYJLLQOct8qBzvg.G6lIh6QQuM8m5HPYrRX/G.';
+        userId = 1;
+    }
+
     cb(null, passwordHash, userId);
 }
 

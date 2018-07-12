@@ -32,11 +32,15 @@ app.use(controller.logRequest);
 app.get('/', controller.verifyLogin, controller.goHome);
 app.get('/login', (req, res) => {
     /* shouldn't be able to log in if you're lready logged in... */
-    if (req.session.email) {
+    if (req.session.loggedIn) {
         res.redirect('/');
         return;
     }
 
+    if (!req.session.message) {
+        req = controller.clearMessage(req);
+    }
+    
     res.render('pages/login', {loggedIn: req.session.loggedIn, message: req.session.message});
 });
 app.get('/register', (req, res) => {
