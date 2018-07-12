@@ -3,24 +3,18 @@ const chalk = require('chalk');
 
 const model = require('./model.js');
 
-// global server vars
-// var loggedIn = true;
-var activeBuildId = 1;
-var message = {
-    text: '',
-    type: ''
-};
-
 /* GET */
 function goHome(req, res) {
     model.getItemTypes((err, itemTypes) => {
         if (err) {
-            console.log('unabel to access model');
             console.error(err);
+            req.session.message.text = 'Unable to get Item Types';
+            req.session.message.type = 'error';
         }
 
         var viewData = {
-            loggedIn: req.session.email != undefined,
+            loggedIn: req.session.loggedIn,
+            message: req.session.message,
             itemTypes
         };
 
@@ -29,12 +23,18 @@ function goHome(req, res) {
 }
 
 function getBuild(req, res) {
+    req.session.message = {
+        text: '',
+        type: ''
+    };
+
     var buildId = req.params.buildId;
 
     model.getBuildById(buildId, (err, build) => {
         if (err) {
-            message.text = 'Unable to get build';
-            message.type = 'error';
+            console.error(err);
+            req.session.message.text = 'Unable to get build';
+            req.session.message.type = 'error';
         }
 
         /* calculate total price */
@@ -44,8 +44,8 @@ function getBuild(req, res) {
         }, 0);
 
         let viewData = {
-            loggedIn,
-            message,
+            loggedIn: req.session.loggedIn,
+            message: req.session.message,
             items: build,
             totalPrice
         };
@@ -59,21 +59,24 @@ function getItems(req, res) {
 
     model.getItemsByType(typeId, (err, items, itemTypeName) => {
         if (err) {
-            //TODO handle error
+            console.error(err);
+            req.session.message.text = `Unable to get ${itemTypeName} items`;
+            req.session.message.type = 'error';
         }
 
         var viewData = {
-            loggedIn,
             itemTypeName,
             items,
         };
 
+        // TODO set activeBuildId
+        var activeBuildId = 1;
         model.getBuildById(activeBuildId, (err, build) => {
             if (err) {
                 console.log(err);
             }
 
-            console.log('bleh\n', build);
+            // console.log('bleh\n', build);
             var buildItem = build.find(buildItem => buildItem.itemTypeId == typeId);
             // console.log(buildItem);
 
@@ -85,6 +88,9 @@ function getItems(req, res) {
                         item.isActive = true;
                 });
             }
+
+            viewData.loggedIn = req.session.loggedIn;
+            viewData.message = req.session.message;
 
             res.render('pages/items', viewData);
         });
@@ -98,6 +104,8 @@ function login(req, res) {
 
     /* make sure an email & password were provided */
     if (!email || !password) {
+        // req.session.message.text = 'Missing Email OR Password';
+        // req.session.message.type = 'error';
         console.error(new Error('Missing Email OR Password'));
         res.redirect('/login');
         return;
@@ -110,6 +118,11 @@ function login(req, res) {
             return;
         }
         // Check to see if userId is null (no match)!!
+        if (userId === null) {
+            console.log('no user with that email found');
+            res.redirect('/login');
+            return;
+        }
 
         bcrypt.compare(password, passwordHash, (err, match) => {
             if (err) {
@@ -119,10 +132,9 @@ function login(req, res) {
             }
 
             if (match === true) {
-
                 model.getUserBuild;
                 req.session.email = email;
-                req.session.loggedIn = false;
+                req.session.loggedIn = true;
                 res.redirect('/');
                 return;
             }
@@ -150,14 +162,16 @@ function register(req, res) {
         password: req.body.password
     };
 
-    model.registerUser(userData, (err) => {
+    model.registerUser(userData, (err, userId) => {
         if (err) {
             res.redirect('/register');
             console.log('error with model');
             return;
         }
 
-        loggedIn = true;
+        res.session.loggedIn = true;
+        res.session.email = userData.email;
+
         res.redirect('/');
         console.log('successfully registered');
     });

@@ -44,7 +44,7 @@ app.get('/register', (req, res) => {
         res.redirect('/');
         return;
     } else {
-        res.render('pages/register', {loggedIn: req.session.loggedIn, message: req.session.message});
+        res.render('pages/register', {loggedIn: req.session.loggedIn, message: {text: req.session.message.text, type: req.session.message.type}});
     }
 });
 app.get('/builds', controller.verifyLogin, (req, res) => {
