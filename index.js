@@ -67,17 +67,20 @@ app.get('/items/:typeId', controller.verifyLogin, controller.getItems);
 app.post('/login', controller.login);
 app.post('/logout', controller.logout);
 app.post('/register', controller.register);
-app.post('/builds/:buildId', controller.setActiveBuild);
+// app.post('/builds/:buildId', controller.setActiveBuild);
 app.post('/builds/:buildId/:itemId', controller.addItemToBuild);
 
 
 /* All PUT requests */
-app.put('/builds/:buildId/:itemId', controller.changeitemQuantity);
+// app.put('/builds/:buildId/:itemId', controller.changeitemQuantity);
+
+// TODO make these PUT requests
+// ERROR how do we know if we are adding or removign form the build???
+app.put('/builds/:buildId', controller.clearBuild);
+app.put('/builds/:buildId/:itemId', controller.removeItemFromBuild);
 
 
 /* All DELETE requests */
-app.delete('/builds/:buildId', controller.clearBuild);
-app.delete('/builds/:buildId/:itemId', controller.removeItemFromBuild);
 
 
 /* Default route (404) */

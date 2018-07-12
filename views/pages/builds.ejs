@@ -27,7 +27,7 @@
                     <button class="button btn-warning" id="${item.itemId}">Remove</button>
                 </td>
                 <td>
-                    ${item.itemPrice}
+                    $${item.itemPrice}
                 </td>`);
             });
         }
@@ -37,10 +37,9 @@
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
 
             var res = await fetch(`/builds/${buildId}/${itemId}`, {
-                method: 'DELETE'
+                method: 'PUT'
             });
             var build = await res.json();
-            // console.log('build:', build);
             
             buildPage(build);
         }
@@ -49,9 +48,8 @@
             // WARNING this is a very bad way to get the buildId. Maybe use the session instead?
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
             var res = await fetch(`/builds/${buildId}`, {
-                method: 'DELETE'
+                method: 'PUT'
             });
-            // console.log('build:', build);
             var build = await res.json();
 
             buildPage(build);

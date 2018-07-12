@@ -184,19 +184,14 @@ function register(req, res) {
 
 
 /* PUT */
-function setActiveBuild(req, res) {
+// function setActiveBuild(req, res) {
 
-}
+// }
 
 function addItemToBuild(req, res) {
 
 }
 
-function changeitemQuantity(req, res) {
-
-}
-
-/* DELETE */
 function removeItemFromBuild(req, res) {
     var buildId = req.params.buildId;
     var itemId = req.params.itemId;
@@ -212,7 +207,10 @@ function removeItemFromBuild(req, res) {
 }
 
 function clearBuild(req, res) {
-    var buildId = req.params.buildId;
+    // TODO get buildId from build
+    var buildId = req.session.buildId || req.params.buildId;
+
+
     model.clearBuild(buildId, (err, build) => {
         if (err) {
             console.error(err);
@@ -222,6 +220,14 @@ function clearBuild(req, res) {
         res.json(build);
     });
 }
+
+// function changeitemQuantity(req, res) {
+
+// }
+
+/* DELETE */
+
+
 /* Middleware */
 
 function verifyLogin(req, res, next) {
@@ -252,9 +258,9 @@ module.exports = {
     login,
     logout,
     register,
-    setActiveBuild,
+    // setActiveBuild,
     addItemToBuild,
-    changeitemQuantity,
+    // changeitemQuantity,
     removeItemFromBuild,
     clearBuild,
     verifyLogin,

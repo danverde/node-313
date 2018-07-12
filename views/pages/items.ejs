@@ -11,31 +11,40 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/browse.css" />
     <script>
+        function buildPage(items) {
+
+        }
+
         function addItemToBuild(itemId) {
             console.log('add item called with id:', itemId);
         }
         
         async function removeItemFromBuild(itemId) {
+            // TODO use the session on the server side!!
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
 
             /* Send delete request */
             var res = await fetch(`/builds/${buildId}/${itemId}`, {
-                method: 'DELETE'
+                method: 'PUT',
+                // TODO add params to body!
+                // body: {
+                    
+                // }
             });
             var build = await res.json();
             console.log(build);
         }
 
-        /* add appropriate event listeners to add/ remove item from build */
         document.addEventListener('DOMContentLoaded', () => {
             [...document.querySelectorAll('.item-container .button')].forEach(ele => {
+                /* add appropriate event listeners to add/ remove item from build */
                 if ([...ele.classList].includes('btn-warning')) {
                     ele.addEventListener('click', () => {
-                        removeItemFromBuild(ele.id);
+                        removeItemFromBuild(ele.dataset.id);
                     })
                 } else {
                     ele.addEventListener('click', () => {
-                        addItemToBuild(ele.id);
+                        addItemToBuild(ele.dataset.id);
                     })
                 }
             });
@@ -61,7 +70,7 @@
             <div id='itemList' class='flex-wrapper space-around'>
                 <!-- TODO build list of items -->
                 <% items.forEach(item => { %>
-                    <div class='item-container' class='flex-wrapper space-around'>
+                    <div class='item-container' id='<%= item.itemId %>' class='flex-wrapper space-around'>
                         <img src='<%= item.itemImagePath %>'>
                         <h4>
                             <%= item.itemName %>
@@ -74,9 +83,9 @@
                         </p>
                         <div>
                             <% if (item.isActive === true) {%>
-                                <button class="button btn-warning" id='<%= item.itemId %>'>Remove from Build</button>
+                                <button class="button btn-warning" data-id="<%= item.itemId %>">Remove from Build</button>
                             <% } else { %>
-                                <button class="button" id='<%= item.itemId %>'>Add to Build</button>
+                                <button class="button" data-id="<%= item.itemId %>">Add to Build</button>
                             <% } %>
                         </div>
                     </div>

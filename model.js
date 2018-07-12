@@ -1,11 +1,14 @@
-const {
-    Pool
-} = require('pg');
-const connectionString = process.env.DATABASE_URL; // TODO get this working! || 'postgres://ta_user:ta_pass@localhost:5432/familyhistory';
+const { Pool } = require('pg');
+const connectionString = process.env.DATABASE_URL || 'postgres://nodeuser:admin@localhost:5432/builds';
 const pool = new Pool({
     connectionString: connectionString
 });
 
+// pool.connect();
+
+pool.query('', [1], (err, result) => {
+
+});
 
 function getItemTypes(cb) {
     var itemTypes = [{
@@ -65,11 +68,11 @@ function removeItemFromBuild(buildId, itemId, cb) {
     if (buildId == 1) {
         build1 = build1.filter(item => item.itemId != itemId);
         cb(null, build1);
-        console.log('\n', build1);
+        // console.log('\n', build1);
     } else {
         build2 = build2.filter(item => item.itemId != itemId);
         cb(null, build2);
-        console.log('\n', build2);
+        // console.log('\n', build2);
     }
 }
 
