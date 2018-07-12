@@ -1,25 +1,17 @@
+const bcrypt = require('bcrypt-nodejs');
+
 const model = require('./model.js');
 
 // global server vars
-var loggedIn = true;
+// var loggedIn = true;
 var activeBuildId = 1;
 var message = {
     text: '',
     type: ''
 };
 
-var viewData = {
-    loggedIn,
-    message
-};
-
 /* GET */
 function goHome(req, res) {
-    if (loggedIn === false) {
-        res.redirect('login');
-        return;
-    }
-
     model.getItemTypes((err, itemTypes) => {
         if (err) {
             //TODO handle err
@@ -35,11 +27,6 @@ function goHome(req, res) {
 }
 
 function getBuild(req, res) {
-    if (loggedIn === false) {
-        res.redirect('login');
-        return;
-    }
-
     var buildId = req.params.buildId;
 
     model.getBuildById(buildId, (err, build) => {
@@ -65,13 +52,7 @@ function getBuild(req, res) {
     });
 }
 
-
 function getItems(req, res) {
-    if (loggedIn === false) {
-        res.redirect('login');
-        return;
-    }
-
     var typeId = req.params.typeId;
 
     model.getItemsByType(typeId, (err, items, itemTypeName) => {
@@ -90,7 +71,7 @@ function getItems(req, res) {
                 console.log(err);
             }
 
-            console.log('bleh\n',build);
+            console.log('bleh\n', build);
             var buildItem = build.find(buildItem => buildItem.itemTypeId == typeId);
             // console.log(buildItem);
 
@@ -102,31 +83,46 @@ function getItems(req, res) {
                         item.isActive = true;
                 });
             }
-            
+
             res.render('pages/items', viewData);
         });
     });
 }
+
 /* POST */
 function login(req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
+    /* make sure an email & password were provided */
     if (!email || !password) {
+        console.error(new Error('Missing Email OR Password'));
         res.redirect('/login');
         return;
     }
 
     model.getLoginCredentials(email, (err, passwordHash) => {
         if (err) {
+            console.error(err);
             res.redirect('/login');
             return;
         }
 
-        //TODO compare hashes
+        bcrypt.compare(password, passwordHash, (err, match) => {
+            if (err) {
+                console.error(err);
+                res.redirect('/login');
+                return;
+            }
 
-        loggedIn = true;
-        res.redirect('/');
+
+            if (match === true) {
+                req.session.email = email;
+                res.redirect('/');
+                return;
+            }
+            res.redirect('/login');
+        });
     });
 }
 
@@ -191,6 +187,17 @@ function removeItemFromBuild(req, res) {
     });
 }
 
+/* Middleware */
+
+function verifyLogin(req, res, next) {
+    if (!req.session.email) {
+        res.redirect('login');
+        return;
+    }
+    next();
+}
+
+
 module.exports = {
     goHome,
     getBuild,
@@ -201,5 +208,6 @@ module.exports = {
     setActiveBuild,
     addItemToBuild,
     changeitemQuantity,
-    removeItemFromBuild
+    removeItemFromBuild,
+    verifyLogin,
 };
