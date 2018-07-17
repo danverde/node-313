@@ -1,7 +1,6 @@
 /* eslint no-console:0 */
 
 const asyncLib = require('async');
-const _ = require('lodash');
 const {
     Pool
 } = require('pg');
@@ -9,18 +8,6 @@ const connectionString = process.env.DATABASE_URL || 'postgres://nodeuser:admin@
 const pool = new Pool({
     connectionString: connectionString
 });
-
-function getItemTypes(cb) {
-    var itemTypes = [{
-        itemTypeName: 'Motherboards',
-        itemTypeId: 1
-    }, {
-        itemTypeName: 'RAM',
-        itemTypeId: 2
-    }];
-
-    cb(null, itemTypes);
-}
 
 function getUserByEmail(email, cb) {
     pool.query('SELECT * FROM users WHERE email=$1', [email], (err, result) => {
@@ -39,9 +26,6 @@ function getUserByEmail(email, cb) {
 }
 
 function createUser(userData, cb) {
-    // var userId = 1,
-    //     buildId = 1;
-
     var params = [
         userData.firstName,
         userData.lastName,
@@ -49,7 +33,6 @@ function createUser(userData, cb) {
         userData.password
     ];
 
-    // TODO check for user before attempting to add!
     pool.query('INSERT INTO users(firstName, lastName, email, password) VALUES($1, $2, $3, $4) RETURNING userId',
         params, (err, addUserResult) => {
             if (err) {
@@ -71,47 +54,51 @@ function createUser(userData, cb) {
         });
 }
 
-function getItemById(item, cb) {
-    // console.log(item);
-    var key = item[0];
-    var itemId = item[1];
+function getItemTypes(cb) {
+    var itemTypes = [{
+        itemTypeName: 'Motherboards',
+        itemTypeId: 1
+    }, {
+        itemTypeName: 'RAM',
+        itemTypeId: 2
+    }];
 
-    pool.query('SELECT * FROM items WHERE itemId=$1', [itemId], (err, itemDetails) => {
-        if (err) {
-            cb(err, null);
-            return;
-        }
-        console.log(itemDetails.rows);
-        cb(itemDetails.rows);
-    });
+    cb(null, itemTypes);
 }
 
 function getBuildById(buildId, cb) {
-    // var build;
-    pool.query('SELECT * FROM builds WHERE buildId=$1;', [buildId], (err, build) => {
+    pool.query(`SELECT i.name, i.price, it.itemTypeName, it.itemTypeId
+        FROM items AS i
+        INNER JOIN builds AS bu ON (bu.buildId = $1)
+        INNER JOIN itemType AS it USING (itemTypeId)
+        WHERE bu.motherboardId = i.itemId
+        OR bu.cpuId = i.itemId
+        OR bu.gpuId = i.itemId
+        OR bu.storageId = i.itemId
+        OR bu.memoryId = i.itemId
+        OR bu.towerId = i.itemId
+        OR bu.fanId = i.itemId
+        OR bu.psuId = i.itemId`, [buildId], (err, build) => {
         if (err) {
             cb(err, null);
             return;
         }
-        // console.log(build.rows);
-        asyncLib.map(_.entries(build.rows[0]), getItemById, (err, detailedBuild) => {
-            if (err) {
-                console.error(err);
-            }
-            console.log(detailedBuild);
-            cb(null, detailedBuild);
-        });
+        // console.log(build);
 
-        // getItemsInBuild(build.rows, cb);
+        cb(null, build.rows);
     });
-    // TESTING
-    // if (id == 1) {
-    //     build = build1;
-    // } else {
-    //     build = build2;
-    // }
+}
 
-    // cb(null, build);
+function getBuildByUser(userId, cb) {
+    pool.query('SELECT * FROM builds WHERE userId=$1;', [userId], (err, build) => {
+        if (err) {
+            cb(err, null);
+        } else if (build.rowCount === 0) {
+            cb(new Error('Unable to find matching build'), null);
+        } else {
+            cb(null, build.rows[0]);
+        }
+    });
 }
 
 function getItemsByType(typeId, cb) {
@@ -154,6 +141,7 @@ module.exports = {
     getItemTypes,
     getUserByEmail,
     createUser,
+    getBuildByUser,
     getBuildById,
     getItemsByType,
     removeItemFromBuild,

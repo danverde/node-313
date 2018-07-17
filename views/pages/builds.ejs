@@ -98,16 +98,16 @@
                     <% items.forEach((item) => { %>
                         <tr>
                             <td>
-                                <a href="/items/<%= item.itemTypeId %>"><%= item.itemTypeName %></a>
+                                <a href="/items/<%= item.itemtypeid %>"><%= item.itemtypename %></a>
                             </td>
                             <td>
-                                <%= item.itemName %>
+                                <%= item.name %>
                             </td>
                             <td>
-                                <button class="button btn-warning" id="<%= item.itemId %>">Remove</button>
+                                <button class="button btn-warning" id="<%= item.itemid %>">Remove</button>
                             </td>
                             <td>$
-                                <%= item.itemPrice %>
+                                <%= item.price %>
                             </td>
                         </tr>
                         <% }) %>

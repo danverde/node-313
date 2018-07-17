@@ -34,10 +34,10 @@ function getBuild(req, res) {
             req.session.message.text = 'Unable to get build';
             req.session.message.type = 'error';
         }
-        console.log(build);
+        // console.log('DA BUILD:', build);
         /* calculate total price */
         var totalPrice = build.reduce((totalPrice, item) => {
-            totalPrice += item.itemPrice;
+            totalPrice += item.price;
             return totalPrice;
         }, 0);
 
@@ -124,7 +124,7 @@ function login(req, res) {
         } else if (user === null) {
             console.log('no user with that email found');
             req.session.message.type = 'error';
-            req.session.message.text = 'That email is not currently in use';
+            req.session.message.text = 'Invalid Email or Password';
             res.redirect('/login');
             return;
         }
@@ -137,15 +137,26 @@ function login(req, res) {
                 return;
             }
 
-            // TODO add buildId to session!
-            if (match === true) {
-                model.getUserBuild;
+            if (match === false) {
+                req.session.message.type = 'error';
+                req.session.message.text = 'Invalid Email or Password';
+                res.redirect('/login');
+                return;
+            }
+            model.getBuildByUser(user.userid, (err, build) => {
+                if (err) {
+                    console.error(err);
+                    req.session.message.type = 'error';
+                    req.session.message.text = 'Unable to get user build';
+                    res.redirect('/login');
+                    return;
+                }
+
+                req.session.buildId = build.buildid;
                 req.session.email = email;
                 req.session.loggedIn = true;
                 res.redirect('/');
-                return;
-            }
-            res.redirect('/login');
+            });
         });
     });
 }
@@ -172,13 +183,13 @@ function register(req, res) {
             console.error(err);
             res.redirect('/register');
             return;
-        } else if ( user !== null) {
+        } else if (user !== null) {
             req.session.message.type = 'error';
             req.session.message.text = 'Email already in use';
             res.redirect('/register');
             return;
         }
-    
+
         /* Encrypt password */
         bcrypt.hash(req.body.password, bcrypt.genSaltSync(), null, (err, passwordHash) => {
             if (err) {
@@ -188,14 +199,14 @@ function register(req, res) {
                 res.redirect('/register');
                 return;
             }
-        
+
             var userData = {
                 firstName: req.body.fName,
                 lastName: req.body.lName,
                 email: req.body.email,
                 password: passwordHash
             };
-        
+
             /* create user */
             model.createUser(userData, (err, userId, buildId) => {
                 if (err) {
@@ -205,11 +216,11 @@ function register(req, res) {
                     res.redirect('/register');
                     return;
                 }
-            
+
                 req.session.loggedIn = true;
                 req.session.email = userData.email;
                 req.session.buildId = buildId;
-            
+
                 res.redirect('/');
             });
         });
