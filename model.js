@@ -1,14 +1,20 @@
+/* eslint no-console:0 */
+
+const asyncLib = require('async');
+const _ = require('lodash');
 const { Pool } = require('pg');
 const connectionString = process.env.DATABASE_URL || 'postgres://nodeuser:admin@localhost:5432/builds';
 const pool = new Pool({
     connectionString: connectionString
 });
 
-// pool.connect();
 
-pool.query('', [1], (err, result) => {
-
-});
+/* pool.query('select * from users', (err, result) => {
+    if (err) {
+        console.error(err);
+    }
+    console.log(result.rows);
+}); */
 
 function getItemTypes(cb) {
     var itemTypes = [{
@@ -39,15 +45,46 @@ function registerUser(credentials, cb) {
     cb(null);
 }
 
-function getBuildById(id, cb) {
-    var build;
-    if (id == 1) {
-        build = build1;
-    } else {
-        build = build2;
-    }
+function getItemById(item, cb) {
+    // console.log(item);
+    var key = item[0];
+    var itemId = item[1];
 
-    cb(null, build);
+    pool.query('SELECT * FROM items WHERE item_id=$1', [itemId], (err, itemDetails) => {
+        if(err) {
+            console.error(err);
+        }
+        console.log(itemDetails.rows);
+    });
+}
+
+function getBuildById(buildId, cb) {
+    // var build;
+    pool.query('SELECT * FROM builds WHERE build_id=$1;', [buildId], (err, build) => {
+        if (err) {
+            console.error(err);
+            cb(err, null);
+            return;
+        }
+        // console.log(build.rows);
+        asyncLib.map(_.entries(build.rows[0]), getItemById, (err, detailedBuild) => {
+            if (err) {
+                console.error(err);
+            }
+            console.log(detailedBuild);
+            cb(null, detailedBuild);
+        });
+
+        // getItemsInBuild(build.rows, cb);
+    });
+    // TESTING
+    // if (id == 1) {
+    //     build = build1;
+    // } else {
+    //     build = build2;
+    // }
+
+    // cb(null, build);
 }
 
 function getItemsByType(typeId, cb) {

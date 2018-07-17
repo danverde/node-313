@@ -1,3 +1,5 @@
+/* eslint no-console:0 */
+
 const express = require('express');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
@@ -23,6 +25,11 @@ app.use(session({
 }));
 
 app.use(controller.logRequest);
+app.use((req, res, next) => {
+    if (req.session.message == undefined)
+        req = controller.resetMessage(req);
+    next();
+});
 
 /******************************
  * START ROUTING
@@ -36,30 +43,42 @@ app.get('/login', (req, res) => {
         res.redirect('/');
         return;
     }
-
-    if (!req.session.message) {
-        req = controller.clearMessage(req);
-    }
+    /* set view Data */
+    var viewData = {
+        loggedIn: req.session.loggedIn, 
+        message: req.session.message
+    };
+    /* reset message */
+    req = controller.resetMessage(req);
     
-    res.render('pages/login', {loggedIn: req.session.loggedIn, message: req.session.message});
+    res.render('pages/login', viewData);
 });
+
 app.get('/register', (req, res) => {
-    if (req.session.email) {
+    if (req.session.loggedIn) {
         res.redirect('/');
         return;
     } else {
-        res.render('pages/register', {loggedIn: req.session.loggedIn, message: {text: req.session.message.text, type: req.session.message.type}});
+        var viewData = {loggedIn: req.session.loggedIn, 
+            message: req.session.message
+        };
+
+        req = controller.resetMessage(req);
+        res.render('pages/register', viewData);
     }
 });
+
 app.get('/builds', controller.verifyLogin, (req, res) => {
     // TODO remove default build ID
     var activeBuildId = 1;
     res.redirect(`builds/${activeBuildId}`);
 });
+
 app.get('/builds/:buildId', controller.verifyLogin, controller.getBuild);
 app.get('/items', controller.verifyLogin, (req, res) => {
     res.redirect('items/1');
 });
+
 app.get('/items/:typeId', controller.verifyLogin, controller.getItems);
 
 

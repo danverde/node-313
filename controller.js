@@ -1,3 +1,5 @@
+/* eslint no-console:0 */
+
 const bcrypt = require('bcrypt-nodejs');
 const chalk = require('chalk');
 
@@ -18,16 +20,12 @@ function goHome(req, res) {
             itemTypes
         };
 
+        req = resetMessage(req);
         res.render('pages/home', viewData);
     });
 }
 
 function getBuild(req, res) {
-    req.session.message = {
-        text: '',
-        type: ''
-    };
-
     var buildId = req.params.buildId;
 
     model.getBuildById(buildId, (err, build) => {
@@ -36,7 +34,7 @@ function getBuild(req, res) {
             req.session.message.text = 'Unable to get build';
             req.session.message.type = 'error';
         }
-
+        console.log(build);
         /* calculate total price */
         var totalPrice = build.reduce((totalPrice, item) => {
             totalPrice += item.itemPrice;
@@ -50,6 +48,7 @@ function getBuild(req, res) {
             totalPrice
         };
 
+        req = resetMessage(req);
         res.render('pages/builds', viewData);
     });
 }
@@ -74,6 +73,8 @@ function getItems(req, res) {
         model.getBuildById(activeBuildId, (err, build) => {
             if (err) {
                 console.log(err);
+                req.session.message.text = 'Unable to get build';
+                req.session.message.type = 'error';
             }
 
             // console.log('bleh\n', build);
@@ -91,6 +92,8 @@ function getItems(req, res) {
 
             viewData.loggedIn = req.session.loggedIn;
             viewData.message = req.session.message;
+            
+            req = resetMessage(req);
 
             res.render('pages/items', viewData);
         });
@@ -101,10 +104,6 @@ function getItems(req, res) {
 function login(req, res) {
     var email = req.body.email;
     var password = req.body.password;
-    req.session.message = {
-        text: '',
-        type: ''
-    };
 
     /* make sure an email & password were provided */
     if (!email || !password) {
@@ -124,6 +123,9 @@ function login(req, res) {
         // Check to see if userId is null (no match)!!
         if (userId === null) {
             console.log('no user with that email found');
+            req.session.message.type = 'error';
+            req.session.message.text = 'Invalid email';
+
             res.redirect('/login');
             return;
         }
@@ -243,7 +245,7 @@ function logRequest(req, res, next) {
     next();
 }
 
-function clearMessage(req) {
+function resetMessage(req) {
     req.session.message = {
         text: '',
         type: ''
@@ -265,5 +267,5 @@ module.exports = {
     clearBuild,
     verifyLogin,
     logRequest,
-    clearMessage,
+    resetMessage,
 };
