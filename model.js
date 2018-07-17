@@ -2,19 +2,13 @@
 
 const asyncLib = require('async');
 const _ = require('lodash');
-const { Pool } = require('pg');
+const {
+    Pool
+} = require('pg');
 const connectionString = process.env.DATABASE_URL || 'postgres://nodeuser:admin@localhost:5432/builds';
 const pool = new Pool({
     connectionString: connectionString
 });
-
-
-/* pool.query('select * from users', (err, result) => {
-    if (err) {
-        console.error(err);
-    }
-    console.log(result.rows);
-}); */
 
 function getItemTypes(cb) {
     var itemTypes = [{
@@ -28,21 +22,53 @@ function getItemTypes(cb) {
     cb(null, itemTypes);
 }
 
-function getLoginCredentials(email, cb) {
-    var passwordHash = null;
-    var userId = null;
+function getUserByEmail(email, cb) {
+    pool.query('SELECT * FROM users WHERE email=$1', [email], (err, result) => {
+        if (err) {
+            cb(err);
+            return;
+        }
 
-    if (email === 'bleh@gmail.com') {
-        passwordHash = '$2a$10$kpAxG/axNjzmkQ6tYJLLQOct8qBzvg.G6lIh6QQuM8m5HPYrRX/G.';
-        userId = 1;
-    }
+        var user = null;
+        if (result.rowCount > 0) {
+            user = result.rows[0];
+        }
 
-    cb(null, passwordHash, userId);
+        cb(null, user);
+    });
 }
 
-function registerUser(credentials, cb) {
+function createUser(userData, cb) {
+    // var userId = 1,
+    //     buildId = 1;
 
-    cb(null);
+    var params = [
+        userData.firstName,
+        userData.lastName,
+        userData.email,
+        userData.password
+    ];
+
+    // TODO check for user before attempting to add!
+    pool.query('INSERT INTO users(firstName, lastName, email, password) VALUES($1, $2, $3, $4) RETURNING userId',
+        params, (err, addUserResult) => {
+            if (err) {
+                cb(err, null, null);
+                return;
+            }
+
+            var userId = addUserResult.rows[0].userid;
+
+            pool.query('INSERT INTO builds (userId) VALUES($1) RETURNING buildId', [userId], (err, addBuildResult) => {
+                if (err) {
+                    cb(err, userId, null);
+                    return;
+                }
+
+                var buildId = addBuildResult.rows.buildid;
+                cb(null, userId, buildId);
+            });
+        });
 }
 
 function getItemById(item, cb) {
@@ -50,19 +76,20 @@ function getItemById(item, cb) {
     var key = item[0];
     var itemId = item[1];
 
-    pool.query('SELECT * FROM items WHERE item_id=$1', [itemId], (err, itemDetails) => {
-        if(err) {
-            console.error(err);
+    pool.query('SELECT * FROM items WHERE itemId=$1', [itemId], (err, itemDetails) => {
+        if (err) {
+            cb(err, null);
+            return;
         }
         console.log(itemDetails.rows);
+        cb(itemDetails.rows);
     });
 }
 
 function getBuildById(buildId, cb) {
     // var build;
-    pool.query('SELECT * FROM builds WHERE build_id=$1;', [buildId], (err, build) => {
+    pool.query('SELECT * FROM builds WHERE buildId=$1;', [buildId], (err, build) => {
         if (err) {
-            console.error(err);
             cb(err, null);
             return;
         }
@@ -125,8 +152,8 @@ function clearBuild(buildId, cb) {
 
 module.exports = {
     getItemTypes,
-    getLoginCredentials,
-    registerUser,
+    getUserByEmail,
+    createUser,
     getBuildById,
     getItemsByType,
     removeItemFromBuild,

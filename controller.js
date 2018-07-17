@@ -26,7 +26,7 @@ function goHome(req, res) {
 }
 
 function getBuild(req, res) {
-    var buildId = req.params.buildId;
+    var buildId = req.session.buildId;
 
     model.getBuildById(buildId, (err, build) => {
         if (err) {
@@ -92,7 +92,7 @@ function getItems(req, res) {
 
             viewData.loggedIn = req.session.loggedIn;
             viewData.message = req.session.message;
-            
+
             req = resetMessage(req);
 
             res.render('pages/items', viewData);
@@ -114,21 +114,21 @@ function login(req, res) {
         return;
     }
 
-    model.getLoginCredentials(email, (err, passwordHash, userId) => {
+    model.getUserByEmail(email, (err, user) => {
         if (err) {
+            req.session.message.text = 'Unable to find user';
+            req.session.message.type = 'error';
             console.error(err);
             res.redirect('/login');
             return;
-        }
-        // Check to see if userId is null (no match)!!
-        if (userId === null) {
+        } else if (user === null) {
             console.log('no user with that email found');
             req.session.message.type = 'error';
-            req.session.message.text = 'Invalid email';
-
+            req.session.message.text = 'That email is not currently in use';
             res.redirect('/login');
             return;
         }
+        var passwordHash = user.password;
 
         bcrypt.compare(password, passwordHash, (err, match) => {
             if (err) {
@@ -137,6 +137,7 @@ function login(req, res) {
                 return;
             }
 
+            // TODO add buildId to session!
             if (match === true) {
                 model.getUserBuild;
                 req.session.email = email;
@@ -156,39 +157,68 @@ function logout(req, res) {
 
 function register(req, res) {
     if (req.body.password != req.body.confirmPassword) {
-        res.redirect('/register');
         console.log('passwords didn\'t match');
+        req.session.message.type = 'error';
+        req.session.message.text = 'Passwords must match';
+        res.redirect('/register');
         return;
     }
 
-    var userData = {
-        firstName: req.body.fName,
-        lastName: req.body.lName,
-        email: req.body.email,
-        password: req.body.password
-    };
-
-    model.registerUser(userData, (err, userId) => {
+    /* Ensure email is not already in use */
+    model.getUserByEmail(req.body.email, (err, user) => {
         if (err) {
+            req.session.message.type = 'error';
+            req.session.message.text = 'An error occurred. Please try again later.';
+            console.error(err);
             res.redirect('/register');
-            console.log('error with model');
+            return;
+        } else if ( user !== null) {
+            req.session.message.type = 'error';
+            req.session.message.text = 'Email already in use';
+            res.redirect('/register');
             return;
         }
-
-        res.session.loggedIn = true;
-        res.session.email = userData.email;
-
-        res.redirect('/');
-        console.log('successfully registered');
+    
+        /* Encrypt password */
+        bcrypt.hash(req.body.password, bcrypt.genSaltSync(), null, (err, passwordHash) => {
+            if (err) {
+                console.error(err);
+                req.session.message.type = 'error';
+                req.session.message.text = 'Invalid password';
+                res.redirect('/register');
+                return;
+            }
+        
+            var userData = {
+                firstName: req.body.fName,
+                lastName: req.body.lName,
+                email: req.body.email,
+                password: passwordHash
+            };
+        
+            /* create user */
+            model.createUser(userData, (err, userId, buildId) => {
+                if (err) {
+                    req.session.message.type = 'error';
+                    req.session.message.text = 'An error occurred. Please try again later.';
+                    console.error(err);
+                    res.redirect('/register');
+                    return;
+                }
+            
+                req.session.loggedIn = true;
+                req.session.email = userData.email;
+                req.session.buildId = buildId;
+            
+                res.redirect('/');
+            });
+        });
     });
 }
 
 
 
 /* PUT */
-// function setActiveBuild(req, res) {
-
-// }
 
 function addItemToBuild(req, res) {
 
@@ -223,10 +253,6 @@ function clearBuild(req, res) {
     });
 }
 
-// function changeitemQuantity(req, res) {
-
-// }
-
 /* DELETE */
 
 
@@ -260,9 +286,7 @@ module.exports = {
     login,
     logout,
     register,
-    // setActiveBuild,
     addItemToBuild,
-    // changeitemQuantity,
     removeItemFromBuild,
     clearBuild,
     verifyLogin,

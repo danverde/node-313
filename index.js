@@ -94,7 +94,7 @@ app.post('/builds/:buildId/:itemId', controller.addItemToBuild);
 // app.put('/builds/:buildId/:itemId', controller.changeitemQuantity);
 
 // TODO make these PUT requests
-// ERROR how do we know if we are adding or removign form the build???
+// ERROR how do we know if we are adding or removing from the build???
 app.put('/builds/:buildId', controller.clearBuild);
 app.put('/builds/:buildId/:itemId', controller.removeItemFromBuild);
 
