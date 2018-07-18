@@ -227,21 +227,22 @@ function register(req, res) {
     });
 }
 
-
-
-/* PUT */
-
+// TODO this function
 function addItemToBuild(req, res) {
 
 }
 
+
+/* PUT */
 function removeItemFromBuild(req, res) {
     var buildId = req.params.buildId;
     var itemId = req.params.itemId;
 
     model.removeItemFromBuild(buildId, itemId, (err, build) => {
         if (err) {
-            console.log(err);
+            console.error(err);
+            res.status(500);
+            res.json(err);
             return;
         }
 
@@ -250,17 +251,27 @@ function removeItemFromBuild(req, res) {
 }
 
 function clearBuild(req, res) {
-    // TODO get buildId from build
-    var buildId = req.session.buildId || req.params.buildId;
+    var buildId = req.session.buildId;
 
-
-    model.clearBuild(buildId, (err, build) => {
+    model.clearBuild(buildId, (err) => {
         if (err) {
             console.error(err);
-            // TODO add error handling
+            res.status(500);
+            res.json(err);
+            return;
         }
 
-        res.json(build);
+        model.getBuildById(buildId, (err, build) => {
+            if (err) {
+                console.error(err);
+                res.status(500);
+                res.json(err);
+                return;
+            }
+
+            console.log(`build: ${build}`);
+            res.json(build);
+        });
     });
 }
 

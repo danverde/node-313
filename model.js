@@ -128,13 +128,15 @@ function removeItemFromBuild(buildId, itemId, cb) {
 }
 
 function clearBuild(buildId, cb) {
-    // var build;
-
-    if (buildId == 1) {
-        build1 = [];
-        cb(null, build1);
-    }
-
+    pool.query(`UPDATE builds 
+        SET (motherboardId, cpuId, gpuId, fanId, memoryId, storageId, towerId, psuId)= (null, null, null, null, null, null, null, null)
+        WHERE buildId=$1`, [buildId], (err, result) => {
+        if (err) {
+            cb(err);
+            return;
+        }
+        cb(null);
+    });
 }
 
 module.exports = {

@@ -51,7 +51,7 @@
                 method: 'PUT'
             });
             var build = await res.json();
-
+            console.log('Got Build:', JSON.stringify(build))
             buildPage(build);
         }
 
