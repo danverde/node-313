@@ -15,11 +15,8 @@
             ele.classList.toggle('btn-warning');
         }
 
-        async function addItemToBuild(itemTypeName, ele) {
+        async function addItemToBuild(buildId, itemTypeName, ele) {
             var itemId = ele.dataset.id
-            console.log('add item called with id:', itemId);
-            // TODO get buildID
-            var buildId = 3; // TESTING
 
             var res = await fetch(`/builds/${buildId}/${itemTypeName}/${itemId}`, {
                 method: 'PUT',
@@ -35,10 +32,7 @@
             ele.innerHTML = "Remove from Build";
         }
         
-        async function removeItemFromBuild(itemTypeName, ele) {
-            // TODO get buildID
-            var buildId = 3; // TESTING
-
+        async function removeItemFromBuild(buildId, itemTypeName, ele) {
             /* Send delete request */
             var res = await fetch(`/builds/${buildId}/${itemTypeName}`, {
                 method: 'DELETE',
@@ -51,15 +45,17 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const itemTypeName = document.getElementById('itemTypeName').innerHTML;
+            const buildId = document.getElementById('buildId').innerHTML;
+
             [...document.querySelectorAll('.item-container .button')].forEach(ele => {
                 /* add appropriate event listeners to add/ remove item from build */
                 if ([...ele.classList].includes('btn-warning')) {
                     ele.addEventListener('click', () => {
-                        removeItemFromBuild(itemTypeName, ele);
+                        removeItemFromBuild(buildId, itemTypeName, ele);
                     })
                 } else {
                     ele.addEventListener('click', () => {
-                        addItemToBuild(itemTypeName, ele);
+                        addItemToBuild(buildId, itemTypeName, ele);
                     })
                 }
             });
@@ -82,6 +78,7 @@
             </div>
             <% } %>
             <div class="invisible" id='itemTypeName'><%= itemtypename %></div>
+            <div class="invisible" id='buildId'><%= buildId %></div>
             <div id='itemList' class='flex-wrapper space-around'>
                 <% items.forEach(item => { %>
                     <div class='item-container' id='<%= item.itemid %>' class='flex-wrapper space-around'>

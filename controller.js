@@ -103,6 +103,7 @@ function getItems(req, res) {
 
             viewData.loggedIn = req.session.loggedIn;
             viewData.message = req.session.message;
+            viewData.buildId = req.session.activeBuildId;
 
             req = resetMessage(req);
             res.render('pages/items', viewData);
