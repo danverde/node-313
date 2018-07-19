@@ -227,6 +227,8 @@ function register(req, res) {
                     return;
                 }
 
+                console.log('new Build Id:', buildId);
+
                 req.session.loggedIn = true;
                 req.session.email = userData.email;
                 req.session.activeBuildId = buildId;

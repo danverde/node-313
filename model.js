@@ -1,6 +1,5 @@
 /* eslint no-console:0 */
 
-const asyncLib = require('async');
 const {
     Pool
 } = require('pg');
@@ -48,7 +47,8 @@ function createUser(userData, cb) {
                     return;
                 }
 
-                var buildId = addBuildResult.rows.buildid;
+                console.log(addBuildResult.rows);
+                var buildId = addBuildResult.rows[0].buildid;
                 cb(null, userId, buildId);
             });
         });
@@ -127,7 +127,7 @@ function getItemsByType(typeId, cb) {
 
 function addItemToBuild(itemId, itemTypeName, buildId, cb) {
     /* This is nasty... but it has to be done. There is no other way to dynamically select a column */
-    pool.query(`UPDATE builds SET ${itemTypeName}=$1 WHERE buildId = $2`, [itemId, buildId], (err, result) => {
+    pool.query(`UPDATE builds SET ${itemTypeName}=$1 WHERE buildId = $2`, [itemId, buildId], (err) => {
         if (err)
             cb(err);
         else
@@ -136,7 +136,7 @@ function addItemToBuild(itemId, itemTypeName, buildId, cb) {
 }
 
 function removeItemFromBuild(buildId, itemTypeName, cb) {
-    pool.query(`UPDATE builds SET ${itemTypeName}Id=NULL WHERE buildId=$1`, [buildId], (err, result) => {
+    pool.query(`UPDATE builds SET ${itemTypeName}Id=NULL WHERE buildId=$1`, [buildId], (err) => {
         if (err)
             cb(err);
         else
@@ -147,7 +147,7 @@ function removeItemFromBuild(buildId, itemTypeName, cb) {
 function clearBuild(buildId, cb) {
     pool.query(`UPDATE builds 
         SET (motherboardId, cpuId, gpuId, fanId, memoryId, storageId, towerId, psuId)= (null, null, null, null, null, null, null, null)
-        WHERE buildId=$1`, [buildId], (err, result) => {
+        WHERE buildId=$1`, [buildId], (err) => {
         if (err)
             cb(err);
         else
@@ -166,63 +166,3 @@ module.exports = {
     removeItemFromBuild,
     clearBuild,
 };
-
-
-/* HARD-CODED values for TESTING */
-/* Eventually these will be replaced by the DB... */
-
-// var build1 = [{
-//     itemTypeId: 1,
-//     itemTypeName: 'Motherboard',
-//     itemId: 1,
-//     itemName: 'Z97-AR.jpg',
-//     itemPrice: 100
-// }, {
-//     itemTypeId: 2,
-//     itemTypeName: 'RAM',
-//     itemId: 3,
-//     itemName: 'Tridentz RGB',
-//     itemPrice: 100
-// }];
-
-// var build2 = [{
-//     itemTypeId: 1,
-//     itemTypeName: 'Motherboard',
-//     itemId: 2,
-//     itemName: 'x299e',
-//     itemPrice: 30
-// }, {
-//     itemTypeId: 2,
-//     itemTypeName: 'RAM',
-//     itemId: 4,
-//     itemName: 'Corsair Vengance',
-//     itemPrice: 30
-// }];
-
-// var motherboards = [{
-//     itemId: 1,
-//     itemName: 'Z97-AR.jpg',
-//     itemPrice: 100,
-//     itemDescription: 'This is a really cool item that you shoud get',
-//     itemImagePath: '/images/z97ar.jpg',
-// }, {
-//     itemId: 2,
-//     itemName: 'x299e',
-//     itemPrice: 30,
-//     itemDescription: 'This is a really cool item that you shoud get',
-//     itemImagePath: '/images/x299e.jpg',
-// }];
-
-// var ram = [{
-//     itemId: 3,
-//     itemName: 'Tridentz RGB',
-//     itemPrice: 100,
-//     itemDescription: 'This is a really cool item that you shoud get',
-//     itemImagePath: '/images/tridentz.jpg',
-// }, {
-//     itemId: 4,
-//     itemName: 'Corsair Vengance',
-//     itemPrice: 30,
-//     itemDescription: 'This is a really cool item that you shoud get',
-//     itemImagePath: '/images/vengance.jpg',
-// }];

@@ -101,7 +101,7 @@
                     <% items.forEach((item) => { %>
                         <tr>
                             <td>
-                                <a href="/items/<%= item.itemtypeid %>"><%= item.itemtypename %></a>
+                                <a href="/items/<%= item.itemtypeid %>"><%= item.itemtypename.charAt(0).toUpperCase() + item.itemtypename.slice(1); %></a>
                             </td>
                             <td>
                                 <%= item.name %>
