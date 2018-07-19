@@ -26,15 +26,24 @@ function goHome(req, res) {
 }
 
 function getBuild(req, res) {
-    var buildId = req.session.activeBuildId;
+    var buildId = req.params.buildId;
+
+    /* make sure users don't edit other users builds */
+    if (buildId != req.session.activeBuildId) {
+        req.session.message.text = 'You are not authorized to access that item';
+        req.session.message.type = 'error';
+        res.redirect('/');
+        return;
+    }
 
     model.getBuildById(buildId, (err, build) => {
         if (err) {
             console.error(err);
             req.session.message.text = 'Unable to get build';
             req.session.message.type = 'error';
+            res.redirect('/');
+            return;
         }
-        // console.log('DA BUILD:', build);
         /* calculate total price */
         var totalPrice = build.reduce((totalPrice, item) => {
             totalPrice += item.price;
@@ -66,8 +75,6 @@ function getItems(req, res) {
             return;
         }
 
-        console.log(`item type name: ${itemtypename}`);
-
         var viewData = {
             itemtypename,
             items,
@@ -75,7 +82,7 @@ function getItems(req, res) {
 
         model.getBuildById(activeBuildId, (err, build) => {
             if (err) {
-                console.log(err);
+                console.error(err);
                 req.session.message.text = 'Unable to get build';
                 req.session.message.type = 'error';
                 req.redirect('/');
@@ -125,7 +132,7 @@ function login(req, res) {
             res.redirect('/login');
             return;
         } else if (user === null) {
-            console.log('no user with that email found');
+            console.error(new Error('no user with that email found'));
             req.session.message.type = 'error';
             req.session.message.text = 'Invalid Email or Password';
             res.redirect('/login');
@@ -171,7 +178,7 @@ function logout(req, res) {
 
 function register(req, res) {
     if (req.body.password != req.body.confirmPassword) {
-        console.log('passwords didn\'t match');
+        console.error(new Error('passwords didn\'t match'));
         req.session.message.type = 'error';
         req.session.message.text = 'Passwords must match';
         res.redirect('/register');

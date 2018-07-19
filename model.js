@@ -81,7 +81,6 @@ function getBuildById(buildId, cb) {
             cb(err, null);
             return;
         }
-        // console.log(build);
 
         cb(null, build.rows);
     });
@@ -146,7 +145,6 @@ function removeItemFromBuild(buildId, itemTypeName, cb) {
 }
 
 function clearBuild(buildId, cb) {
-    console.log(`build id: ${buildId}`);
     pool.query(`UPDATE builds 
         SET (motherboardId, cpuId, gpuId, fanId, memoryId, storageId, towerId, psuId)= (null, null, null, null, null, null, null, null)
         WHERE buildId=$1`, [buildId], (err, result) => {
@@ -154,7 +152,6 @@ function clearBuild(buildId, cb) {
             cb(err);
         else
             cb(null);
-        console.log(result);
     });
 }
 
