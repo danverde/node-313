@@ -26,7 +26,7 @@
                     ${item.name}
                 </td>
                 <td>
-                    <button class="button btn-warning" id="${item.itemid}">Remove</button>
+                    <button class="button btn-warning" id="${item.itemid}" data-itemTypeName="${item.itemtypename}">Remove</button>
                 </td>
                 <td>
                     $${item.price}
@@ -40,7 +40,7 @@
         }
 
         async function removeItemFromBuild(itemTypeName, itemId) {
-            var buildId = document.getElementById('buildId').innerHTML;
+            var buildId = document.getElementById('buildId').innerHTML.trim();
 
             var res = await fetch(`/builds/${buildId}/${itemTypeName}`, {
                 method: 'DELETE'
@@ -51,7 +51,7 @@
         }
 
         async function clearBuild() {
-            var buildId = document.getElementById('buildId').innerHTML;
+            var buildId = document.getElementById('buildId').innerHTML.trim();
 
             var res = await fetch(`/builds/${buildId}`, {
                 method: 'DELETE'
