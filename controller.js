@@ -26,7 +26,7 @@ function goHome(req, res) {
 }
 
 function getBuild(req, res) {
-    var buildId = req.session.buildId;
+    var buildId = req.session.activeBuildId;
 
     model.getBuildById(buildId, (err, build) => {
         if (err) {
@@ -152,7 +152,7 @@ function login(req, res) {
                     return;
                 }
 
-                req.session.buildId = build.buildid;
+                req.session.activeBuildId = build.buildid;
                 req.session.email = email;
                 req.session.loggedIn = true;
                 res.redirect('/');
@@ -219,7 +219,7 @@ function register(req, res) {
 
                 req.session.loggedIn = true;
                 req.session.email = userData.email;
-                req.session.buildId = buildId;
+                req.session.activeBuildId = buildId;
 
                 res.redirect('/');
             });
@@ -227,18 +227,13 @@ function register(req, res) {
     });
 }
 
-// TODO this function
 function addItemToBuild(req, res) {
+    var buildId = req.session.activeBuildId,
+        itemId = req.body.itemId,
+        // TODO how to get this param???
+        itemTypeName = req.body.itemTypeName;
 
-}
-
-
-/* PUT */
-function removeItemFromBuild(req, res) {
-    var buildId = req.params.buildId;
-    var itemId = req.params.itemId;
-
-    model.removeItemFromBuild(buildId, itemId, (err, build) => {
+    model.addItemToBuild(itemId, itemTypeName, buildId, (err) => {
         if (err) {
             console.error(err);
             res.status(500);
@@ -246,12 +241,25 @@ function removeItemFromBuild(req, res) {
             return;
         }
 
-        res.json(build);
+        model.getBuildById(buildId, (err, build) => {
+            if (err) {
+                console.error(err);
+                res.status(500);
+                res.json(err);
+                return;
+            }
+
+            res.json(build);
+        });
     });
 }
 
+
+/* PUT */
+
 function clearBuild(req, res) {
-    var buildId = req.session.buildId;
+    // var buildId = req.session.activeBuildId;
+    var buildId = req.params.buildId;
 
     model.clearBuild(buildId, (err) => {
         if (err) {
@@ -269,7 +277,6 @@ function clearBuild(req, res) {
                 return;
             }
 
-            console.log(`build: ${build}`);
             res.json(build);
         });
     });
@@ -277,8 +284,32 @@ function clearBuild(req, res) {
 
 /* DELETE */
 
+function removeItemFromBuild(req, res, itemTypeName) {
+    var buildId = req.params.buildId;
+
+    model.removeItemFromBuild(buildId, itemTypeName, (err, build) => {
+        if (err) {
+            console.error(err);
+            res.status(500);
+            res.json(err);
+            return;
+        }
+
+        model.getBuildById(buildId, (err) => {
+            if (err) {
+                console.error(err);
+                res.status(500);
+                res.json(err);
+                return;
+            }
+            res.json(build);
+        });
+    });
+}
 
 /* Middleware */
+
+
 
 function verifyLogin(req, res, next) {
     if (!req.session.email) {

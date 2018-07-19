@@ -16,16 +16,26 @@
         }
 
         function addItemToBuild(itemId) {
+            //TODO how to get itemTypeId/ itemTypeName?
             console.log('add item called with id:', itemId);
+            var res = await fetch(`/builds/${buildId}/${itemId}`, {
+                method: 'PUT',
+                // TODO add params to body!
+                // body: {
+                    
+                // }
+            });
+            var build = await res.json();
+            console.log(build);
         }
         
         async function removeItemFromBuild(itemId) {
-            // TODO use the session on the server side!!
+            // TODO use the session on the server side!!?
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
 
             /* Send delete request */
             var res = await fetch(`/builds/${buildId}/${itemId}`, {
-                method: 'PUT',
+                method: 'DELETE',
                 // TODO add params to body!
                 // body: {
                     

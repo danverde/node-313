@@ -115,27 +115,35 @@ function getItemsByType(typeId, cb) {
     cb(null, items, itemTypeName);
 }
 
-function removeItemFromBuild(buildId, itemId, cb) {
-    if (buildId == 1) {
-        build1 = build1.filter(item => item.itemId != itemId);
-        cb(null, build1);
-        // console.log('\n', build1);
-    } else {
-        build2 = build2.filter(item => item.itemId != itemId);
-        cb(null, build2);
-        // console.log('\n', build2);
-    }
+function addItemToBuild(itemId, itemTypeName, buildId, cb) {
+    /* This is nasty... but it has to be done. There is no other way to dynamically select a column */
+    pool.query(`UPDATE builds SET ${itemTypeName}=$1 WHERE buildId = $2`, [itemId, buildId], (err, result) => {
+        if (err) 
+            cb(err);
+        else
+            cb(null);
+    });
+}
+
+function removeItemFromBuild(buildId, itemTypeName, cb) {
+    pool.query(`UPDATE builds SET ${itemTypeName}Id=NULL WHERE buildId=$1`, [buildId], (err, result) => {
+        if (err)
+            cb(err);
+        else
+            cb(null);
+    });
 }
 
 function clearBuild(buildId, cb) {
+    console.log(`build id: ${buildId}`);
     pool.query(`UPDATE builds 
         SET (motherboardId, cpuId, gpuId, fanId, memoryId, storageId, towerId, psuId)= (null, null, null, null, null, null, null, null)
         WHERE buildId=$1`, [buildId], (err, result) => {
-        if (err) {
+        if (err) 
             cb(err);
-            return;
-        }
-        cb(null);
+        else
+            cb(null);
+        console.log(result);
     });
 }
 
@@ -146,66 +154,67 @@ module.exports = {
     getBuildByUser,
     getBuildById,
     getItemsByType,
+    addItemToBuild,
     removeItemFromBuild,
     clearBuild,
 };
 
 
-/* HARD-CODED values for testing */
+/* HARD-CODED values for TESTING */
 /* Eventually these will be replaced by the DB... */
 
-var build1 = [{
-    itemTypeId: 1,
-    itemTypeName: 'Motherboard',
-    itemId: 1,
-    itemName: 'Z97-AR.jpg',
-    itemPrice: 100
-}, {
-    itemTypeId: 2,
-    itemTypeName: 'RAM',
-    itemId: 3,
-    itemName: 'Tridentz RGB',
-    itemPrice: 100
-}];
+// var build1 = [{
+//     itemTypeId: 1,
+//     itemTypeName: 'Motherboard',
+//     itemId: 1,
+//     itemName: 'Z97-AR.jpg',
+//     itemPrice: 100
+// }, {
+//     itemTypeId: 2,
+//     itemTypeName: 'RAM',
+//     itemId: 3,
+//     itemName: 'Tridentz RGB',
+//     itemPrice: 100
+// }];
 
-var build2 = [{
-    itemTypeId: 1,
-    itemTypeName: 'Motherboard',
-    itemId: 2,
-    itemName: 'x299e',
-    itemPrice: 30
-}, {
-    itemTypeId: 2,
-    itemTypeName: 'RAM',
-    itemId: 4,
-    itemName: 'Corsair Vengance',
-    itemPrice: 30
-}];
+// var build2 = [{
+//     itemTypeId: 1,
+//     itemTypeName: 'Motherboard',
+//     itemId: 2,
+//     itemName: 'x299e',
+//     itemPrice: 30
+// }, {
+//     itemTypeId: 2,
+//     itemTypeName: 'RAM',
+//     itemId: 4,
+//     itemName: 'Corsair Vengance',
+//     itemPrice: 30
+// }];
 
-var motherboards = [{
-    itemId: 1,
-    itemName: 'Z97-AR.jpg',
-    itemPrice: 100,
-    itemDescription: 'This is a really cool item that you shoud get',
-    itemImagePath: '/images/z97ar.jpg',
-}, {
-    itemId: 2,
-    itemName: 'x299e',
-    itemPrice: 30,
-    itemDescription: 'This is a really cool item that you shoud get',
-    itemImagePath: '/images/x299e.jpg',
-}];
+// var motherboards = [{
+//     itemId: 1,
+//     itemName: 'Z97-AR.jpg',
+//     itemPrice: 100,
+//     itemDescription: 'This is a really cool item that you shoud get',
+//     itemImagePath: '/images/z97ar.jpg',
+// }, {
+//     itemId: 2,
+//     itemName: 'x299e',
+//     itemPrice: 30,
+//     itemDescription: 'This is a really cool item that you shoud get',
+//     itemImagePath: '/images/x299e.jpg',
+// }];
 
-var ram = [{
-    itemId: 3,
-    itemName: 'Tridentz RGB',
-    itemPrice: 100,
-    itemDescription: 'This is a really cool item that you shoud get',
-    itemImagePath: '/images/tridentz.jpg',
-}, {
-    itemId: 4,
-    itemName: 'Corsair Vengance',
-    itemPrice: 30,
-    itemDescription: 'This is a really cool item that you shoud get',
-    itemImagePath: '/images/vengance.jpg',
-}];
+// var ram = [{
+//     itemId: 3,
+//     itemName: 'Tridentz RGB',
+//     itemPrice: 100,
+//     itemDescription: 'This is a really cool item that you shoud get',
+//     itemImagePath: '/images/tridentz.jpg',
+// }, {
+//     itemId: 4,
+//     itemName: 'Corsair Vengance',
+//     itemPrice: 30,
+//     itemDescription: 'This is a really cool item that you shoud get',
+//     itemImagePath: '/images/vengance.jpg',
+// }];

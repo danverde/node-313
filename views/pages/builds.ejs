@@ -11,6 +11,7 @@
     <script>
         function buildPage(build) {
             /* clear build */
+            // ERROR doesn't update total price!
             var table = document.querySelector('tbody');
             table.innerHTML = '';
 
@@ -34,10 +35,11 @@
 
         async function removeItemFromBuild(itemId) {
             console.log('removing item with id', itemId);
+            // TODO is there a better way to get the buildId?
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
-
-            var res = await fetch(`/builds/${buildId}/${itemId}`, {
-                method: 'PUT'
+            //TODO we also need to know the itemTypeName / itemTypeId.....
+            var res = await fetch(`/builds/${buildId}`, {
+                method: 'DELETE'
             });
             var build = await res.json();
             
@@ -47,8 +49,9 @@
         async function clearBuild() {
             // WARNING this is a very bad way to get the buildId. Maybe use the session instead?
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
+
             var res = await fetch(`/builds/${buildId}`, {
-                method: 'PUT'
+                method: 'DELETE'
             });
             var build = await res.json();
             console.log('Got Build:', JSON.stringify(build))

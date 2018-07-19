@@ -69,8 +69,7 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/builds', controller.verifyLogin, (req, res) => {
-    // TODO remove default build ID
-    var activeBuildId = 1;
+    var activeBuildId = req.session.activeBuildId;
     res.redirect(`builds/${activeBuildId}`);
 });
 
@@ -86,20 +85,47 @@ app.get('/items/:typeId', controller.verifyLogin, controller.getItems);
 app.post('/login', controller.login);
 app.post('/logout', controller.logout);
 app.post('/register', controller.register);
-// app.post('/builds/:buildId', controller.setActiveBuild);
-app.post('/builds/:buildId/:itemId', controller.addItemToBuild);
 
 
 /* All PUT requests */
-// app.put('/builds/:buildId/:itemId', controller.changeitemQuantity);
-
-// TODO make these PUT requests
-// ERROR how do we know if we are adding or removing from the build???
-app.put('/builds/:buildId', controller.clearBuild);
-app.put('/builds/:buildId/:itemId', controller.removeItemFromBuild);
+app.put('/builds/:buildId/:itemId', controller.addItemToBuild);
 
 
 /* All DELETE requests */
+app.delete('/builds/:buildId/motherboard', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'motherboard');
+});
+
+app.delete('/builds/:buildId/cpu', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'cpu');
+});
+
+app.delete('/builds/:buildId/gpu', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'gpu');
+});
+
+app.delete('/builds/:buildId/memory', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'memory');
+});
+
+app.delete('/builds/:buildId/storage', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'storage');
+});
+
+app.delete('/builds/:buildId/fan', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'fan');
+});
+
+app.delete('/builds/:buildId/tower', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'tower');
+});
+
+app.delete('/builds/:buildId/psu', (req, res) => {
+    controller.removeItemFromBuild(req, res, 'psu');
+});
+
+app.delete('/builds/:buildId', controller.clearBuild);
+
 
 
 /* Default route (404) */
