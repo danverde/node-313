@@ -88,43 +88,12 @@ app.post('/register', controller.register);
 
 
 /* All PUT requests */
-app.put('/builds/:buildId/:itemId', controller.addItemToBuild);
+app.put('/builds/:buildId/:itemTypeName/:itemId', controller.addItemToBuild);
 
 
 /* All DELETE requests */
-app.delete('/builds/:buildId/motherboard', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'motherboard');
-});
-
-app.delete('/builds/:buildId/cpu', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'cpu');
-});
-
-app.delete('/builds/:buildId/gpu', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'gpu');
-});
-
-app.delete('/builds/:buildId/memory', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'memory');
-});
-
-app.delete('/builds/:buildId/storage', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'storage');
-});
-
-app.delete('/builds/:buildId/fan', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'fan');
-});
-
-app.delete('/builds/:buildId/tower', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'tower');
-});
-
-app.delete('/builds/:buildId/psu', (req, res) => {
-    controller.removeItemFromBuild(req, res, 'psu');
-});
-
 app.delete('/builds/:buildId', controller.clearBuild);
+app.delete('/builds/:buildId/:itemTypeName', controller.removeItemFromBuild);
 
 
 

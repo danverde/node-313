@@ -95,6 +95,10 @@ nav>form>button[type='submit'] {
 }
 
 /*** START TEMPLATES ***/
+.invisible {
+    display: none;
+}
+
 .inline {
     display: inline-block;
 }

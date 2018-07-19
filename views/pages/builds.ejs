@@ -35,7 +35,7 @@
             });
         }
 
-        async function removeItemFromBuild(itemId) {
+        async function removeItemFromBuild(itemTypeName, itemId) {
             console.log('removing item with id', itemId);
             // TODO is there a better way to get the buildId?
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
@@ -49,7 +49,7 @@
         }
         
         async function clearBuild() {
-            // WARNING this is a very bad way to get the buildId. Maybe use the session instead?
+            // WARNING this is a bad way to get the buildId
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
 
             var res = await fetch(`/builds/${buildId}`, {
@@ -67,7 +67,7 @@
             /* add event listener for remove item buttons */
             [...document.querySelectorAll('tbody .button')].forEach((button) => {
                 button.addEventListener('click', () => {
-                    removeItemFromBuild(button.id);
+                    removeItemFromBuild(button.dataset.itemTypeName, button.id);
                 });
             })
         });
@@ -109,7 +109,7 @@
                                 <%= item.name %>
                             </td>
                             <td>
-                                <button class="button btn-warning" id="<%= item.itemid %>">Remove</button>
+                                <button class="button btn-warning" id="<%= item.itemid %>" data-itemTypeName="<%= item.itemtypename %>">Remove</button>
                             </td>
                             <td>$
                                 <%= item.price %>

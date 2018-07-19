@@ -105,7 +105,6 @@ function getItems(req, res) {
             viewData.message = req.session.message;
 
             req = resetMessage(req);
-
             res.render('pages/items', viewData);
         });
     });
@@ -166,6 +165,7 @@ function login(req, res) {
                 req.session.activeBuildId = build.buildid;
                 req.session.email = email;
                 req.session.loggedIn = true;
+                
                 res.redirect('/');
             });
         });
@@ -240,11 +240,12 @@ function register(req, res) {
     });
 }
 
+/* PUT */
+
 function addItemToBuild(req, res) {
-    var buildId = req.session.activeBuildId,
-        itemId = req.body.itemId,
-        // TODO how to get this param???
-        itemTypeName = req.body.itemTypeName;
+    var buildId = req.params.buildId, // WARNING why is session pretty much empty?
+        itemId = req.params.itemId,
+        itemTypeName = req.params.itemTypeName; //TODO validate input!
 
     model.addItemToBuild(itemId, itemTypeName, buildId, (err) => {
         if (err) {
@@ -267,10 +268,33 @@ function addItemToBuild(req, res) {
     });
 }
 
-
-/* PUT */
-
 /* DELETE */
+
+function removeItemFromBuild(req, res) {
+    var buildId = req.params.buildId,
+        itemTypeName = req.params.itemTypeName;
+
+    model.removeItemFromBuild(buildId, itemTypeName, (err, build) => {
+        if (err) {
+            console.error(err);
+            res.status(500);
+            res.json(err);
+            return;
+        }
+
+        model.getBuildById(buildId, (err, build) => {
+            if (err) {
+                console.error(err);
+                res.status(500);
+                res.json(err);
+                return;
+            }
+            console.log(build);
+            res.json(build);
+        });
+    });
+}
+
 
 function clearBuild(req, res) {
     // var buildId = req.session.activeBuildId;
@@ -297,32 +321,7 @@ function clearBuild(req, res) {
     });
 }
 
-function removeItemFromBuild(req, res, itemTypeName) {
-    var buildId = req.params.buildId;
-
-    model.removeItemFromBuild(buildId, itemTypeName, (err, build) => {
-        if (err) {
-            console.error(err);
-            res.status(500);
-            res.json(err);
-            return;
-        }
-
-        model.getBuildById(buildId, (err) => {
-            if (err) {
-                console.error(err);
-                res.status(500);
-                res.json(err);
-                return;
-            }
-            res.json(build);
-        });
-    });
-}
-
 /* Middleware */
-
-
 
 function verifyLogin(req, res, next) {
     if (!req.session.email) {

@@ -126,8 +126,12 @@ function getItemsByType(typeId, cb) {
 }
 
 function addItemToBuild(itemId, itemTypeName, buildId, cb) {
+    console.log('Add item called');
+    console.log(itemTypeName);
+    console.log(itemId);
+    console.log(buildId);
     /* This is nasty... but it has to be done. There is no other way to dynamically select a column */
-    pool.query(`UPDATE builds SET ${itemTypeName}=$1 WHERE buildId = $2`, [itemId, buildId], (err) => {
+    pool.query(`UPDATE builds SET ${itemTypeName}Id=$1 WHERE buildId=$2`, [itemId, buildId], (err) => {
         if (err)
             cb(err);
         else
@@ -136,6 +140,7 @@ function addItemToBuild(itemId, itemTypeName, buildId, cb) {
 }
 
 function removeItemFromBuild(buildId, itemTypeName, cb) {
+    /* This is nasty... but it has to be done. There is no other way to dynamically select a column */
     pool.query(`UPDATE builds SET ${itemTypeName}Id=NULL WHERE buildId=$1`, [buildId], (err) => {
         if (err)
             cb(err);

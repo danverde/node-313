@@ -11,50 +11,55 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/browse.css" />
     <script>
-        function buildPage(items) {
-
+        function toggleItem(ele) {
+            ele.classList.toggle('btn-warning');
         }
 
-        function addItemToBuild(itemid) {
-            //TODO how to get itemTypeId/ itemtypename?
-            console.log('add item called with id:', itemid);
-            var res = await fetch(`/builds/${buildId}/${itemid}`, {
+        async function addItemToBuild(itemTypeName, ele) {
+            var itemId = ele.dataset.id
+            console.log('add item called with id:', itemId);
+            // TODO get buildID
+            var buildId = 3; // TESTING
+
+            var res = await fetch(`/builds/${buildId}/${itemTypeName}/${itemId}`, {
                 method: 'PUT',
-                // TODO add params to body!
-                // body: {
-                    
-                // }
             });
             var build = await res.json();
-            console.log(build);
+
+            [...document.querySelectorAll('#itemList .btn-warning')].forEach(button => {
+                button.classList.toggle('btn-warning');
+                button.innerHTML = "Add To Build"
+            });
+
+            ele.classList.toggle('btn-warning');
+            ele.innerHTML = "Remove from Build";
         }
         
-        async function removeItemFromBuild(itemid) {
-            // TODO use the session on the server side!!?
-            var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
+        async function removeItemFromBuild(itemTypeName, ele) {
+            // TODO get buildID
+            var buildId = 3; // TESTING
 
             /* Send delete request */
-            var res = await fetch(`/builds/${buildId}/${itemid}`, {
+            var res = await fetch(`/builds/${buildId}/${itemTypeName}`, {
                 method: 'DELETE',
-                // TODO add params to body!
-                // body: {
-                    
-                // }
             });
             var build = await res.json();
-            console.log(build);
+            
+            ele.classList.toggle('btn-warning');
+            ele.innerHTML = "Add to Build";
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const itemTypeName = document.getElementById('itemTypeName').innerHTML;
             [...document.querySelectorAll('.item-container .button')].forEach(ele => {
                 /* add appropriate event listeners to add/ remove item from build */
                 if ([...ele.classList].includes('btn-warning')) {
                     ele.addEventListener('click', () => {
-                        removeItemFromBuild(ele.dataset.id);
+                        removeItemFromBuild(itemTypeName, ele);
                     })
                 } else {
                     ele.addEventListener('click', () => {
-                        addItemToBuild(ele.dataset.id);
+                        addItemToBuild(itemTypeName, ele);
                     })
                 }
             });
@@ -76,7 +81,7 @@
                 </p>
             </div>
             <% } %>
-
+            <div class="invisible" id='itemTypeName'><%= itemtypename %></div>
             <div id='itemList' class='flex-wrapper space-around'>
                 <% items.forEach(item => { %>
                     <div class='item-container' id='<%= item.itemid %>' class='flex-wrapper space-around'>
