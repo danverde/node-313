@@ -80,6 +80,7 @@ function getItems(req, res) {
             items,
         };
 
+        /* determine if any items are currently in use by build */
         model.getBuildById(activeBuildId, (err, build) => {
             if (err) {
                 console.error(err);
@@ -89,13 +90,13 @@ function getItems(req, res) {
                 return;
             }
 
-            var buildItem = build.find(buildItem => buildItem.itemTypeId == typeId);
+            var buildItem = build.find(buildItem => buildItem.itemtypeid == typeId);
 
             if (buildItem) {
-                var activeItemId = buildItem.itemId;
+                var activeItemId = buildItem.itemid;
 
                 viewData.items.forEach(item => {
-                    if (item.itemId === activeItemId)
+                    if (item.itemid === activeItemId)
                         item.isActive = true;
                 });
             }

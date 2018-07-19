@@ -65,7 +65,7 @@ function getItemTypes(cb) {
 }
 
 function getBuildById(buildId, cb) {
-    pool.query(`SELECT i.name, i.price, it.itemTypeName, it.itemTypeId
+    pool.query(`SELECT i.itemId, i.name, i.price, it.itemTypeName, it.itemTypeId
         FROM items AS i
         INNER JOIN builds AS bu ON (bu.buildId = $1)
         INNER JOIN itemType AS it USING (itemTypeId)

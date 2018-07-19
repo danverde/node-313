@@ -12,23 +12,25 @@
         function buildPage(build) {
             /* clear build */
             // ERROR doesn't update total price!
-            var table = document.querySelector('tbody');
+            var table = document.querySelector('tbody'),
+                totalPrice = 0;
             table.innerHTML = '';
 
             /* recreate build */
             build.forEach(item => {
+                totalPrice += item.price
                 table.insertAdjacentHTML('beforeend', 
                 `<td>
-                    <a href='' >${item.itemTypeName}</a>
+                    <a href='' >${item.itemtypename}</a>
                 </td>
                 <td>
-                    ${item.itemName}
+                    ${item.name}
                 </td>
                 <td>
-                    <button class="button btn-warning" id="${item.itemId}">Remove</button>
+                    <button class="button btn-warning" id="${item.itemid}">Remove</button>
                 </td>
                 <td>
-                    $${item.itemPrice}
+                    $${item.price}
                 </td>`);
             });
         }
