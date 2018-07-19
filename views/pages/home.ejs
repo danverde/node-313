@@ -20,7 +20,6 @@
                     Yay! (Just kidding about the 🌮's... Sorry...)</p>
             </div>
 
-            <!-- TODO is this in the correct spot? -->
             <% if (message.text != '') { %>
             <div class="message <%= message.type %>">
                 <p>
@@ -30,7 +29,6 @@
             <% } %>
 
             <div id="parts" class="flex-wrapper">
-                <!-- TODO Create a link for each item type! -->
                 <% itemTypes.forEach((item) => { %>
                     <a class='button button-lg' href='./items/<%= item.itemtypeid %>'><%= item.itemtypename.charAt(0).toUpperCase() + item.itemtypename.slice(1) %></a>
                 <% }) %>

@@ -11,7 +11,6 @@
     <script>
         function buildPage(build) {
             /* clear build */
-            // ERROR doesn't update total price!
             var table = document.querySelector('tbody'),
                 totalPrice = 0;
             table.innerHTML = '';
@@ -19,9 +18,9 @@
             /* recreate build */
             build.forEach(item => {
                 totalPrice += item.price
-                table.insertAdjacentHTML('beforeend', 
-                `<td>
-                    <a href='' >${item.itemtypename}</a>
+                table.insertAdjacentHTML('beforeend',
+                    `<td>
+                    <a href='' >${item.itemtypename.charAt(0).toUpperCase() + item.itemtypename.slice(1)}</a>
                 </td>
                 <td>
                     ${item.name}
@@ -31,47 +30,50 @@
                 </td>
                 <td>
                     $${item.price}
-                </td>`);
+                </td>`
+                );
             });
 
             document.getElementById('totalPrice').innerHTML = `$${totalPrice}`;
+
+            addListeners();
         }
 
         async function removeItemFromBuild(itemTypeName, itemId) {
-            console.log('removing item with id', itemId);
-            // TODO is there a better way to get the buildId?
-            var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
-            //TODO we also need to know the itemTypeName / itemTypeId.....
-            var res = await fetch(`/builds/${buildId}`, {
+            var buildId = document.getElementById('buildId').innerHTML;
+
+            var res = await fetch(`/builds/${buildId}/${itemTypeName}`, {
                 method: 'DELETE'
             });
             var build = await res.json();
-            
+
             buildPage(build);
         }
-        
+
         async function clearBuild() {
-            // WARNING this is a bad way to get the buildId
-            var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
+            var buildId = document.getElementById('buildId').innerHTML;
 
             var res = await fetch(`/builds/${buildId}`, {
                 method: 'DELETE'
             });
             var build = await res.json();
-            console.log('Got Build:', JSON.stringify(build))
             buildPage(build);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        function addListeners() {
             /* add event listener for clear build buton */
             document.getElementById('deleteBuild').addEventListener('click', clearBuild);
 
             /* add event listener for remove item buttons */
             [...document.querySelectorAll('tbody .button')].forEach((button) => {
                 button.addEventListener('click', () => {
-                    removeItemFromBuild(button.dataset.itemTypeName, button.id);
+                    removeItemFromBuild(button.dataset.itemtypename, button.id);
                 });
             })
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            addListeners();
         });
     </script>
 </head>
@@ -85,51 +87,55 @@
             </div>
 
             <% if (message.text != '') { %>
-            <div class="message <%= message.type %>">
-                <p>
-                    <%= message.text %>
-                </p>
-            </div>
-            <% } %>
-                
-            <table>
-                <thead>
-                    <tr>
-                        <th>Component Type</th>
-                        <th>Name</th>
-                        <th></th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% items.forEach((item) => { %>
-                        <tr>
-                            <td>
-                                <a href="/items/<%= item.itemtypeid %>"><%= item.itemtypename.charAt(0).toUpperCase() + item.itemtypename.slice(1); %></a>
-                            </td>
-                            <td>
-                                <%= item.name %>
-                            </td>
-                            <td>
-                                <button class="button btn-warning" id="<%= item.itemid %>" data-itemTypeName="<%= item.itemtypename %>">Remove</button>
-                            </td>
-                            <td>$
-                                <%= item.price %>
-                            </td>
-                        </tr>
-                        <% }) %>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <th>Total:</th>
-                        <td id='totalPrice'>$
-                            <%= totalPrice %>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                <div class="message <%= message.type %>">
+                    <p>
+                        <%= message.text %>
+                    </p>
+                </div>
+                <% } %>
+                    <div class="invisible" id="buildId">
+                        <%= buildId %>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component Type</th>
+                                <th>Name</th>
+                                <th></th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% items.forEach((item) => { %>
+                                <tr>
+                                    <td>
+                                        <a href="/items/<%= item.itemtypeid %>">
+                                            <%= item.itemtypename.charAt(0).toUpperCase() + item.itemtypename.slice(1); %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <%= item.name %>
+                                    </td>
+                                    <td>
+                                        <button class="button btn-warning" id="<%= item.itemid %>" data-itemTypeName="<%= item.itemtypename %>">Remove</button>
+                                    </td>
+                                    <td>$
+                                        <%= item.price %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <th>Total:</th>
+                                <td id='totalPrice'>$
+                                    <%= totalPrice %>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
         </main>
         <%- include('../partials/footer') %>
 </body>

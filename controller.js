@@ -54,6 +54,7 @@ function getBuild(req, res) {
             loggedIn: req.session.loggedIn,
             message: req.session.message,
             items: build,
+            buildId: req.session.activeBuildId,
             totalPrice
         };
 
@@ -166,7 +167,7 @@ function login(req, res) {
                 req.session.activeBuildId = build.buildid;
                 req.session.email = email;
                 req.session.loggedIn = true;
-                
+
                 res.redirect('/');
             });
         });
@@ -229,8 +230,6 @@ function register(req, res) {
                     return;
                 }
 
-                console.log('new Build Id:', buildId);
-
                 req.session.loggedIn = true;
                 req.session.email = userData.email;
                 req.session.activeBuildId = buildId;
@@ -246,7 +245,15 @@ function register(req, res) {
 function addItemToBuild(req, res) {
     var buildId = req.params.buildId, // WARNING why is session pretty much empty?
         itemId = req.params.itemId,
-        itemTypeName = req.params.itemTypeName; //TODO validate input!
+        itemTypeName = req.params.itemTypeName;
+
+    if (!validItemTypeName(itemTypeName)) {
+        var err = new Error('Invalid Item Type Name');
+        console.error(err);
+        res.status(500);
+        res.json(err);
+        return;
+    }
 
     model.addItemToBuild(itemId, itemTypeName, buildId, (err) => {
         if (err) {
@@ -275,7 +282,15 @@ function removeItemFromBuild(req, res) {
     var buildId = req.params.buildId,
         itemTypeName = req.params.itemTypeName;
 
-    model.removeItemFromBuild(buildId, itemTypeName, (err, build) => {
+    if (!validItemTypeName(itemTypeName)) {
+        var err = new Error('Invalid Item Type Name');
+        console.error(err);
+        res.status(500);
+        res.json(err);
+        return;
+    }
+
+    model.removeItemFromBuild(buildId, itemTypeName, (err) => {
         if (err) {
             console.error(err);
             res.status(500);
@@ -290,7 +305,6 @@ function removeItemFromBuild(req, res) {
                 res.json(err);
                 return;
             }
-            console.log(build);
             res.json(build);
         });
     });
@@ -323,6 +337,24 @@ function clearBuild(req, res) {
 }
 
 /* Middleware */
+
+function validItemTypeName(name) {
+    const validNames = [
+        'motherboard',
+        'cpu',
+        'gpu',
+        'storage',
+        'memory',
+        'tower',
+        'fan',
+        'psu',
+    ];
+
+    if (validNames.includes(name))
+        return true;
+    else
+        return false;
+}
 
 function verifyLogin(req, res, next) {
     if (!req.session.email) {

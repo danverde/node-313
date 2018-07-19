@@ -11,52 +11,56 @@
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="../style/browse.css" />
     <script>
-        function toggleItem(ele) {
-            ele.classList.toggle('btn-warning');
-        }
-
-        async function addItemToBuild(buildId, itemTypeName, ele) {
-            var itemId = ele.dataset.id
-
-            var res = await fetch(`/builds/${buildId}/${itemTypeName}/${itemId}`, {
-                method: 'PUT',
-            });
-            var build = await res.json();
-
-            [...document.querySelectorAll('#itemList .btn-warning')].forEach(button => {
-                button.classList.toggle('btn-warning');
-                button.innerHTML = "Add To Build"
-            });
-
-            ele.classList.toggle('btn-warning');
-            ele.innerHTML = "Remove from Build";
-        }
-        
-        async function removeItemFromBuild(buildId, itemTypeName, ele) {
-            /* Send delete request */
-            var res = await fetch(`/builds/${buildId}/${itemTypeName}`, {
-                method: 'DELETE',
-            });
-            var build = await res.json();
-            
-            ele.classList.toggle('btn-warning');
-            ele.innerHTML = "Add to Build";
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            const itemTypeName = document.getElementById('itemTypeName').innerHTML;
-            const buildId = document.getElementById('buildId').innerHTML;
+
+            const itemTypeName = document.getElementById('itemTypeName').innerHTML.trim();
+            const buildId = document.getElementById('buildId').innerHTML.trim();
+
+
+            async function addItemToBuild() {
+                var ele = this,
+                    itemId = ele.dataset.id
+
+                var res = await fetch(`/builds/${buildId}/${itemTypeName}/${itemId}`, {
+                    method: 'PUT',
+                });
+                var build = await res.json();
+
+                [...document.querySelectorAll('#itemList .btn-warning')].forEach(button => {
+                    button.classList.toggle('btn-warning');
+                    button.innerHTML = "Add To Build"
+                    button.removeEventListener('click', removeItemFromBuild);
+                    button.addEventListener('click', addItemToBuild);
+                });
+
+                ele.classList.toggle('btn-warning');
+                ele.innerHTML = "Remove from Build";
+                ele.removeEventListener('click', addItemToBuild);
+                ele.addEventListener('click', removeItemFromBuild);
+            }
+
+            async function removeItemFromBuild() {
+                var ele = this;
+                /* Send delete request */
+                var res = await fetch(`/builds/${buildId}/${itemTypeName}`, {
+                    method: 'DELETE',
+                });
+                var build = await res.json();
+
+                ele.classList.toggle('btn-warning');
+                ele.innerHTML = "Add to Build";
+                ele.removeEventListener('click', removeItemFromBuild);
+                ele.addEventListener('click', addItemToBuild);
+            }
+
+
 
             [...document.querySelectorAll('.item-container .button')].forEach(ele => {
                 /* add appropriate event listeners to add/ remove item from build */
                 if ([...ele.classList].includes('btn-warning')) {
-                    ele.addEventListener('click', () => {
-                        removeItemFromBuild(buildId, itemTypeName, ele);
-                    })
+                    ele.addEventListener('click', removeItemFromBuild);
                 } else {
-                    ele.addEventListener('click', () => {
-                        addItemToBuild(buildId, itemTypeName, ele);
-                    })
+                    ele.addEventListener('click', addItemToBuild);
                 }
             });
         })
@@ -69,39 +73,43 @@
             <h1>
                 <%= itemtypename.charAt(0).toUpperCase() + itemtypename.slice(1); %>
             </h1>
-            
+
             <% if (message.text != '') { %>
-            <div class="message <%= message.type %>">
-                <p>
-                    <%= message.text %>
-                </p>
-            </div>
-            <% } %>
-            <div class="invisible" id='itemTypeName'><%= itemtypename %></div>
-            <div class="invisible" id='buildId'><%= buildId %></div>
-            <div id='itemList' class='flex-wrapper space-around'>
-                <% items.forEach(item => { %>
-                    <div class='item-container' id='<%= item.itemid %>' class='flex-wrapper space-around'>
-                        <img src='/<%= item.imagelocation %>'>
-                        <h4>
-                            <%= item.name %>
-                        </h4>
-                        <p class='price'>$
-                            <%= item.price %>
-                        </p>
-                        <p>
-                            <%= item.description %>
-                        </p>
-                        <div>
-                            <% if (item.isActive === true) {%>
-                                <button class="button btn-warning" data-id="<%= item.itemid %>">Remove from Build</button>
-                            <% } else { %>
-                                <button class="button" data-id="<%= item.itemid %>">Add to Build</button>
-                            <% } %>
-                        </div>
+                <div class="message <%= message.type %>">
+                    <p>
+                        <%= message.text %>
+                    </p>
+                </div>
+                <% } %>
+                    <div class="invisible" id='itemTypeName'>
+                        <%= itemtypename %>
                     </div>
-                <% }); %>
-            </div>
+                    <div class="invisible" id='buildId'>
+                        <%= buildId %>
+                    </div>
+                    <div id='itemList' class='flex-wrapper space-around'>
+                        <% items.forEach(item => { %>
+                            <div class='item-container' id='<%= item.itemid %>' class='flex-wrapper space-around'>
+                                <img src='/<%= item.imagelocation %>'>
+                                <h4>
+                                    <%= item.name %>
+                                </h4>
+                                <p class='price'>$
+                                    <%= item.price %>
+                                </p>
+                                <p>
+                                    <%= item.description %>
+                                </p>
+                                <div>
+                                    <% if (item.isActive === true) {%>
+                                        <button class="button btn-warning" data-id="<%= item.itemid %>">Remove from Build</button>
+                                        <% } else { %>
+                                            <button class="button" data-id="<%= item.itemid %>">Add to Build</button>
+                                            <% } %>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
         </main>
         <%- include('../partials/footer'); %>
 </body>
