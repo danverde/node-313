@@ -54,32 +54,35 @@ function getBuild(req, res) {
 }
 
 function getItems(req, res) {
-    var typeId = req.params.typeId;
+    var typeId = req.params.typeId,
+        activeBuildId = req.session.activeBuildId;
 
-    model.getItemsByType(typeId, (err, items, itemTypeName) => {
+    model.getItemsByType(typeId, (err, items, itemtypename) => {
         if (err) {
             console.error(err);
-            req.session.message.text = `Unable to get ${itemTypeName} items`;
+            req.session.message.text = `Unable to get ${itemtypename} items`;
             req.session.message.type = 'error';
+            req.redirect('/');
+            return;
         }
 
+        console.log(`item type name: ${itemtypename}`);
+
         var viewData = {
-            itemTypeName,
+            itemtypename,
             items,
         };
 
-        // TODO set activeBuildId
-        var activeBuildId = 1;
         model.getBuildById(activeBuildId, (err, build) => {
             if (err) {
                 console.log(err);
                 req.session.message.text = 'Unable to get build';
                 req.session.message.type = 'error';
+                req.redirect('/');
+                return;
             }
 
-            // console.log('bleh\n', build);
             var buildItem = build.find(buildItem => buildItem.itemTypeId == typeId);
-            // console.log(buildItem);
 
             if (buildItem) {
                 var activeItemId = buildItem.itemId;
@@ -257,6 +260,8 @@ function addItemToBuild(req, res) {
 
 /* PUT */
 
+/* DELETE */
+
 function clearBuild(req, res) {
     // var buildId = req.session.activeBuildId;
     var buildId = req.params.buildId;
@@ -281,8 +286,6 @@ function clearBuild(req, res) {
         });
     });
 }
-
-/* DELETE */
 
 function removeItemFromBuild(req, res, itemTypeName) {
     var buildId = req.params.buildId;

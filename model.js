@@ -55,15 +55,13 @@ function createUser(userData, cb) {
 }
 
 function getItemTypes(cb) {
-    var itemTypes = [{
-        itemTypeName: 'Motherboards',
-        itemTypeId: 1
-    }, {
-        itemTypeName: 'RAM',
-        itemTypeId: 2
-    }];
-
-    cb(null, itemTypes);
+    pool.query('SELECT * FROM itemType', (err, result) => {
+        if (err) {
+            cb(err, null);
+            return;
+        }
+        cb(null, result.rows);
+    });
 }
 
 function getBuildById(buildId, cb) {
@@ -104,21 +102,34 @@ function getBuildByUser(userId, cb) {
 function getItemsByType(typeId, cb) {
     var items,
         itemTypeName;
-    if (typeId == 1) {
-        itemTypeName = 'Motherboards';
-        items = motherboards;
-    } else {
-        itemTypeName = 'RAM';
-        items = ram;
-    }
 
-    cb(null, items, itemTypeName);
+    pool.query(`SELECT itemId, name, description, price, imageLocation FROM items AS i 
+        JOIN itemType AS it USING(itemTypeId)
+        WHERE it.itemTypeId = $1`, [typeId], (err, results) => {
+        if (err) {
+            cb(err, null, null);
+            return;
+        }
+        
+        items = results.rows;
+
+        pool.query('SELECT itemTypeName FROM itemType WHERE itemTypeId=$1', [typeId], (err, results) => {
+            if (err) {
+                cb(err, items, null);
+                return;
+            }
+
+            itemTypeName = results.rows[0].itemtypename;
+
+            cb(null, items, itemTypeName);
+        });
+    });
 }
 
 function addItemToBuild(itemId, itemTypeName, buildId, cb) {
     /* This is nasty... but it has to be done. There is no other way to dynamically select a column */
     pool.query(`UPDATE builds SET ${itemTypeName}=$1 WHERE buildId = $2`, [itemId, buildId], (err, result) => {
-        if (err) 
+        if (err)
             cb(err);
         else
             cb(null);
@@ -139,7 +150,7 @@ function clearBuild(buildId, cb) {
     pool.query(`UPDATE builds 
         SET (motherboardId, cpuId, gpuId, fanId, memoryId, storageId, towerId, psuId)= (null, null, null, null, null, null, null, null)
         WHERE buildId=$1`, [buildId], (err, result) => {
-        if (err) 
+        if (err)
             cb(err);
         else
             cb(null);

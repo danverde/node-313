@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
-        <%= itemTypeName %>
+        <%= itemtypename.charAt(0).toUpperCase() + itemtypename.slice(1); %>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="../style/main.css" />
@@ -15,10 +15,10 @@
 
         }
 
-        function addItemToBuild(itemId) {
-            //TODO how to get itemTypeId/ itemTypeName?
-            console.log('add item called with id:', itemId);
-            var res = await fetch(`/builds/${buildId}/${itemId}`, {
+        function addItemToBuild(itemid) {
+            //TODO how to get itemTypeId/ itemtypename?
+            console.log('add item called with id:', itemid);
+            var res = await fetch(`/builds/${buildId}/${itemid}`, {
                 method: 'PUT',
                 // TODO add params to body!
                 // body: {
@@ -29,12 +29,12 @@
             console.log(build);
         }
         
-        async function removeItemFromBuild(itemId) {
+        async function removeItemFromBuild(itemid) {
             // TODO use the session on the server side!!?
             var buildId = window.location.href.split('/')[window.location.href.split('/').length - 1];
 
             /* Send delete request */
-            var res = await fetch(`/builds/${buildId}/${itemId}`, {
+            var res = await fetch(`/builds/${buildId}/${itemid}`, {
                 method: 'DELETE',
                 // TODO add params to body!
                 // body: {
@@ -66,7 +66,7 @@
     <%- include('../partials/header'); %>
         <main>
             <h1>
-                <%= itemTypeName %>
+                <%= itemtypename.charAt(0).toUpperCase() + itemtypename.slice(1); %>
             </h1>
             
             <% if (message.text != '') { %>
@@ -78,24 +78,23 @@
             <% } %>
 
             <div id='itemList' class='flex-wrapper space-around'>
-                <!-- TODO build list of items -->
                 <% items.forEach(item => { %>
-                    <div class='item-container' id='<%= item.itemId %>' class='flex-wrapper space-around'>
-                        <img src='<%= item.itemImagePath %>'>
+                    <div class='item-container' id='<%= item.itemid %>' class='flex-wrapper space-around'>
+                        <img src='/<%= item.imagelocation %>'>
                         <h4>
-                            <%= item.itemName %>
+                            <%= item.name %>
                         </h4>
                         <p class='price'>$
-                            <%= item.itemPrice %>
+                            <%= item.price %>
                         </p>
                         <p>
-                            <%= item.itemDescription %>
+                            <%= item.description %>
                         </p>
                         <div>
                             <% if (item.isActive === true) {%>
-                                <button class="button btn-warning" data-id="<%= item.itemId %>">Remove from Build</button>
+                                <button class="button btn-warning" data-id="<%= item.itemid %>">Remove from Build</button>
                             <% } else { %>
-                                <button class="button" data-id="<%= item.itemId %>">Add to Build</button>
+                                <button class="button" data-id="<%= item.itemid %>">Add to Build</button>
                             <% } %>
                         </div>
                     </div>
